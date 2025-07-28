@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Send, Globe, Copy, Check, AlertCircle, CheckCircle, Clock } from 'lucide-react'
+import { Send, Globe, Copy, Check, AlertCircle, CheckCircle, Clock, List } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
 import './APITester.css'
 
@@ -11,6 +11,15 @@ interface RequestHistory {
   status: number
   timestamp: Date
   responseTime: number
+}
+
+interface FreeAPI {
+  name: string
+  url: string
+  method: string
+  description: string
+  headers?: string
+  body?: string
 }
 
 const APITester: React.FC = () => {
@@ -25,8 +34,86 @@ const APITester: React.FC = () => {
   const [responseTime, setResponseTime] = useState<number | null>(null)
   const [copied, setCopied] = useState(false)
   const [history, setHistory] = useState<RequestHistory[]>([])
+  const [showApiList, setShowApiList] = useState(false)
 
   const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+
+  const freeAPIs: FreeAPI[] = [
+    {
+      name: "JSONPlaceholder - Posts",
+      url: "https://jsonplaceholder.typicode.com/posts",
+      method: "GET",
+      description: "Fake REST API for testing and prototyping"
+    },
+    {
+      name: "JSONPlaceholder - Single Post",
+      url: "https://jsonplaceholder.typicode.com/posts/1",
+      method: "GET",
+      description: "Get a single post by ID"
+    },
+    {
+      name: "JSONPlaceholder - Create Post",
+      url: "https://jsonplaceholder.typicode.com/posts",
+      method: "POST",
+      description: "Create a new post",
+      body: '{\n  "title": "Test Post",\n  "body": "This is a test post",\n  "userId": 1\n}'
+    },
+    {
+      name: "Cat Facts",
+      url: "https://catfact.ninja/fact",
+      method: "GET",
+      description: "Random cat facts"
+    },
+    {
+      name: "Dog API - Random Image",
+      url: "https://dog.ceo/api/breeds/image/random",
+      method: "GET",
+      description: "Random dog images"
+    },
+    {
+      name: "Quotes API",
+      url: "https://api.quotable.io/random",
+      method: "GET",
+      description: "Random inspirational quotes"
+    },
+    {
+      name: "REST Countries",
+      url: "https://restcountries.com/v3.1/all",
+      method: "GET",
+      description: "Information about all countries"
+    },
+    {
+      name: "REST Countries - By Name",
+      url: "https://restcountries.com/v3.1/name/philippines",
+      method: "GET",
+      description: "Search countries by name"
+    },
+    {
+      name: "IP Information",
+      url: "https://httpbin.org/ip",
+      method: "GET",
+      description: "Get your IP address"
+    },
+    {
+      name: "UUID Generator",
+      url: "https://httpbin.org/uuid",
+      method: "GET",
+      description: "Generate a random UUID"
+    },
+    {
+      name: "HTTPBin - POST Test",
+      url: "https://httpbin.org/post",
+      method: "POST",
+      description: "Test POST requests",
+      body: '{\n  "name": "Test User",\n  "email": "test@example.com"\n}'
+    },
+    {
+      name: "Advice API",
+      url: "https://api.adviceslip.com/advice",
+      method: "GET",
+      description: "Random advice slips"
+    }
+  ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -123,6 +210,20 @@ const APITester: React.FC = () => {
     return <AlertCircle size={16} />
   }
 
+  const loadFreeAPI = (api: FreeAPI) => {
+    setUrl(api.url)
+    setMethod(api.method)
+    if (api.headers) {
+      setHeaders(api.headers)
+    }
+    if (api.body) {
+      setBody(api.body)
+    } else {
+      setBody('')
+    }
+    setShowApiList(false)
+  }
+
   return (
     <motion.section
       className={`api-tester ${isDarkMode ? 'dark' : 'light'}`}
@@ -140,6 +241,67 @@ const APITester: React.FC = () => {
           <Globe className="api-icon" size={32} />
           <h2>API Tester</h2>
           <p>Test REST APIs with custom headers and request bodies</p>
+        </motion.div>
+
+        <motion.div 
+          className="free-apis-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.25 }}
+        >
+          <div className="free-apis-header">
+            <h3>Try Free APIs</h3>
+            <motion.button
+              className="toggle-api-list-btn"
+              onClick={() => setShowApiList(!showApiList)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <List size={18} />
+              {showApiList ? 'Hide APIs' : 'Show Free APIs'}
+            </motion.button>
+          </div>
+          
+          {showApiList && (
+            <motion.div 
+              className="api-grid"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {freeAPIs.map((api, index) => (
+                <motion.div
+                  key={api.name}
+                  className="api-card"
+                  onClick={() => loadFreeAPI(api)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      loadFreeAPI(api)
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Load ${api.name} API test`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <div className="api-card-header">
+                    <h4>{api.name}</h4>
+                    <span className={`method-badge ${api.method.toLowerCase()}`}>
+                      {api.method}
+                    </span>
+                  </div>
+                  <p className="api-description">{api.description}</p>
+                  <code className="api-url">{api.url}</code>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </motion.div>
 
         <div className="api-content">
