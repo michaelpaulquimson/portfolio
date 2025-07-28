@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Github, Linkedin, Mail, Phone, MapPin } from 'lucide-react'
+import { Linkedin, Mail, Phone, MapPin } from 'lucide-react'
 import './Header.css'
 
 const Header: React.FC = () => {
