@@ -1,18 +1,28 @@
 .qr-generator {
   padding: 3rem 2rem;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: var(--transition);
+}
+
+.qr-generator.dark {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.qr-generator.light {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
 }
 
 .qr-generator-container {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-secondary);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 2.5rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
   max-width: 800px;
   width: 100%;
 }
@@ -23,16 +33,16 @@
 }
 
 .qr-icon {
-  color: #667eea;
+  color: var(--primary-color);
   margin-bottom: 1rem;
 }
 
 .qr-header h2 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--primary-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -40,7 +50,7 @@
 
 .qr-header p {
   font-size: 1.1rem;
-  color: #718096;
+  color: var(--text-secondary);
   max-width: 500px;
   margin: 0 auto;
 }
@@ -59,7 +69,7 @@
 
 .input-section label {
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
   font-size: 1.1rem;
 }
@@ -67,25 +77,26 @@
 .qr-input {
   width: 100%;
   padding: 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
+  border: 2px solid var(--input-border);
+  border-radius: var(--border-radius);
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
   min-height: 120px;
-  transition: all 0.3s ease;
-  background: #f8fafc;
+  transition: var(--transition);
+  background: var(--input-bg);
+  color: var(--text-primary);
 }
 
 .qr-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  background: #ffffff;
+  background: var(--input-bg);
 }
 
 .qr-input::placeholder {
-  color: #a0aec0;
+  color: var(--text-secondary);
 }
 
 .qr-output {
@@ -105,7 +116,7 @@
 }
 
 .qr-loading {
-  color: #667eea;
+  color: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,7 +124,7 @@
 
 .qr-placeholder {
   text-align: center;
-  color: #a0aec0;
+  color: var(--text-secondary);
 }
 
 .placeholder-icon {

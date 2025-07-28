@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { QrCode, Download, Copy, Check } from 'lucide-react'
 import QRCode from 'qrcode'
+import { useTheme } from '../contexts/ThemeContext'
 import './QRGenerator.css'
 
 const QRGenerator: React.FC = () => {
+  const { isDarkMode } = useTheme()
   const [text, setText] = useState('')
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -69,7 +71,7 @@ const QRGenerator: React.FC = () => {
 
   return (
     <motion.section
-      className="qr-generator"
+      className={`qr-generator ${isDarkMode ? 'dark' : 'light'}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}

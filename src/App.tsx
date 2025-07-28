@@ -1,8 +1,13 @@
 import Portfolio from './components/Portfolio'
+import { ThemeProvider } from './contexts/ThemeContext'
 import './App.css'
 
 function App() {
-  return <Portfolio />
+  return (
+    <ThemeProvider>
+      <Portfolio />
+    </ThemeProvider>
+  )
 }
 
 export default App

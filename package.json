@@ -12,10 +12,14 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^24.1.0",
     "@types/qrcode": "^1.5.5",
+    "browser-image-compression": "^2.0.2",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.23.11",
     "lucide-react": "^0.532.0",
+    "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

@@ -235,6 +235,8 @@
   .header-nav {
     gap: 1rem;
     margin-top: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
   .nav-link {

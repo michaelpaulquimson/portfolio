@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Linkedin, Mail, Phone, MapPin, QrCode, FileText } from 'lucide-react'
+import { Linkedin, Mail, Phone, MapPin, QrCode, FileText, Globe, FolderOpen } from 'lucide-react'
 import './Header.css'
 
 const Header: React.FC = () => {
@@ -136,6 +136,26 @@ const Header: React.FC = () => {
           >
             <QrCode size={18} />
             <span>QR Generator</span>
+          </motion.button>
+          <motion.button
+            className="nav-link"
+            onClick={() => document.querySelector('.api-tester')?.scrollIntoView({ behavior: 'smooth' })}
+            whileHover={{ scale: 1.05, color: "#00f5ff" }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Globe size={18} />
+            <span>API Tester</span>
+          </motion.button>
+          <motion.button
+            className="nav-link"
+            onClick={() => document.querySelector('.file-processor')?.scrollIntoView({ behavior: 'smooth' })}
+            whileHover={{ scale: 1.05, color: "#00f5ff" }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            <FolderOpen size={18} />
+            <span>File Tools</span>
           </motion.button>
         </motion.nav>
       </div>
