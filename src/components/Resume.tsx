@@ -26,6 +26,42 @@ interface CertificationItem {
 
 const Resume: React.FC = () => {
   const { isDarkMode } = useTheme()
+  
+  // Function to calculate duration from start date to present
+  const calculateDurationFromStart = (startMonth: string, startYear: number): string => {
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    const currentMonth = now.getMonth() + 1 // getMonth() returns 0-11
+    
+    // Convert month name to number
+    const monthMap: { [key: string]: number } = {
+      'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'MAY': 5, 'JUN': 6,
+      'JUL': 7, 'AUG': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DEC': 12
+    }
+    
+    const startMonthNum = monthMap[startMonth]
+    
+    let totalMonths = (currentYear - startYear) * 12 + (currentMonth - startMonthNum)
+    
+    // If we haven't reached the start month in the current year, subtract a month
+    if (totalMonths < 0) {
+      totalMonths = 0
+    }
+    
+    const years = Math.floor(totalMonths / 12)
+    const months = totalMonths % 12
+    
+    if (years === 0 && months === 0) {
+      return "Less than 1 month"
+    } else if (years === 0) {
+      return `${months} ${months === 1 ? 'mo' : 'mos'}`
+    } else if (months === 0) {
+      return `${years} ${years === 1 ? 'yr' : 'yrs'}`
+    } else {
+      return `${years} ${years === 1 ? 'yr' : 'yrs'} ${months} ${months === 1 ? 'mo' : 'mos'}`
+    }
+  }
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -51,7 +87,7 @@ const Resume: React.FC = () => {
       title: "Senior Solutions Architect",
       company: "Eclaro Business Solutions, Philippines",
       location: "Philippines",
-      duration: "FEB 2025 - PRESENT",
+      duration: `FEB 2025 - PRESENT (${calculateDurationFromStart('FEB', 2025)})`,
       description: [
         "Provide technical guidance on system development and integration",
         "Review code for alignment with architecture standards",
