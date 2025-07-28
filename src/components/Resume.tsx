@@ -174,6 +174,12 @@ const Resume: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
+          whileHover={{ 
+            scale: 1.02, 
+            boxShadow: isDarkMode 
+              ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
+              : "0 10px 30px rgba(37, 99, 235, 0.1)" 
+          }}
         >
           {summary}
         </motion.p>
@@ -192,7 +198,9 @@ const Resume: React.FC = () => {
               variants={itemVariants}
               whileHover={{ 
                 scale: 1.02, 
-                boxShadow: "0 10px 30px rgba(0, 245, 255, 0.1)" 
+                boxShadow: isDarkMode 
+                  ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
+                  : "0 10px 30px rgba(37, 99, 235, 0.1)" 
               }}
               transition={{ duration: 0.3 }}
             >
@@ -239,7 +247,12 @@ const Resume: React.FC = () => {
             <motion.div
               key={index}
               className="education-item"
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ 
+                scale: 1.02, 
+                boxShadow: isDarkMode 
+                  ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
+                  : "0 10px 30px rgba(37, 99, 235, 0.1)" 
+              }}
               transition={{ duration: 0.3 }}
             >
               <div className="education-header">
@@ -266,7 +279,12 @@ const Resume: React.FC = () => {
             <motion.div
               key={index}
               className="certification-item"
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ 
+                scale: 1.02, 
+                boxShadow: isDarkMode 
+                  ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
+                  : "0 10px 30px rgba(37, 99, 235, 0.1)" 
+              }}
               transition={{ duration: 0.3 }}
             >
               <div className="certification-header">
