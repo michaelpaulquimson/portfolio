@@ -38,9 +38,17 @@
 .title-underline {
   height: 4px;
   width: 60px;
-  background: linear-gradient(135deg, #00f5ff, #0080ff);
   border-radius: 2px;
   margin-top: 0.5rem;
+}
+
+.resume.dark .title-underline {
+  background: linear-gradient(135deg, #00f5ff, #0080ff);
+}
+
+.resume.light .title-underline {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
 }
 
 .summary-section {
@@ -53,9 +61,14 @@
   text-align: justify;
   padding: 2rem;
   border-radius: 15px;
+}
+
+.resume.dark .summary-text {
   border-left: 4px solid #00f5ff;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.resume.light .summary-text {
+  border-left: 4px solid #2563eb;
 }
 
 .experience-section {
@@ -71,7 +84,6 @@
 .experience-item {
   border-radius: 15px;
   padding: 2rem;
-  border-left: 4px solid #00f5ff;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   position: relative;
@@ -80,11 +92,13 @@
 
 .resume.dark .experience-item {
   background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid #00f5ff;
 }
 
 .resume.light .experience-item {
   background: rgba(0, 0, 0, 0.03);
   border: 1px solid #e2e8f0;
+  border-left: 4px solid #2563eb;
 }
 
 .experience-item::before {
@@ -138,6 +152,17 @@
   line-height: 1.3;
 }
 
+.resume.dark .experience-company {
+  color: #00f5ff;
+  text-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+}
+
+.resume.light .experience-company {
+  color: #2563eb;
+  text-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  font-weight: 600;
+}
+
 .experience-meta {
   display: flex;
   flex-direction: column;
@@ -189,9 +214,16 @@
   content: '▶';
   position: absolute;
   left: 0;
-  color: #00f5ff;
   font-size: 0.8rem;
   top: 0.1rem;
+}
+
+.resume.dark .experience-description li::before {
+  color: #00f5ff;
+}
+
+.resume.light .experience-description li::before {
+  color: #2563eb;
 }
 
 .education-certifications-row {
@@ -231,9 +263,18 @@
 }
 
 .education-icon, .certification-icon {
-  color: #00f5ff;
   margin-top: 0.2rem;
   flex-shrink: 0;
+}
+
+.resume.dark .education-icon,
+.resume.dark .certification-icon {
+  color: #00f5ff;
+}
+
+.resume.light .education-icon,
+.resume.light .certification-icon {
+  color: #2563eb;
 }
 
 .education-content, .certification-content {
@@ -260,8 +301,18 @@
 .education-school {
   font-size: 1rem;
   font-weight: 500;
-  color: #00f5ff;
   margin: 0 0 0.5rem 0;
+}
+
+.resume.dark .education-school {
+  color: #00f5ff;
+  text-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+}
+
+.resume.light .education-school {
+  color: #2563eb;
+  text-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  font-weight: 600;
 }
 
 .education-meta {
