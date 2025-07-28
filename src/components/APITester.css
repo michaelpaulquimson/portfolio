@@ -22,15 +22,15 @@
 }
 
 [data-theme="light"] {
-  --bg-primary: #f8fafc;
+  --bg-primary: #f7fafc;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #f1f5f9;
-  --text-primary: #2d3748;
-  --text-secondary: #718096;
-  --border-color: #e2e8f0;
+  --bg-tertiary: #edf2f7;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --border-color: #cbd5e0;
   --input-bg: #ffffff;
-  --input-border: #e2e8f0;
-  --button-bg: #f8fafc;
+  --input-border: #cbd5e0;
+  --button-bg: #f7fafc;
 }
 
 .api-tester {
@@ -45,7 +45,7 @@
 }
 
 .api-tester.light {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e0 100%);
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 50%, #e2e8f0 100%);
 }
 
 .api-tester-container {

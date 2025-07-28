@@ -5,7 +5,17 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.header.dark {
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  color: #ffffff;
+}
+
+.header.light {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  color: #ffffff;
 }
 
 .header-background {

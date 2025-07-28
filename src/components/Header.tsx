@@ -1,9 +1,11 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Linkedin, Mail, Phone, MapPin, QrCode, FileText, Globe, FolderOpen } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
 import './Header.css'
 
 const Header: React.FC = () => {
+  const { isDarkMode } = useTheme()
   const containerVariants = {
     hidden: { opacity: 0, y: -50 },
     visible: {
@@ -27,7 +29,7 @@ const Header: React.FC = () => {
 
   return (
     <motion.header
-      className="header"
+      className={`header ${isDarkMode ? 'dark' : 'light'}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"

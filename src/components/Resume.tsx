@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Calendar, MapPin, Award, GraduationCap } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
 import './Resume.css'
 
 interface ExperienceItem {
@@ -24,6 +25,7 @@ interface CertificationItem {
 }
 
 const Resume: React.FC = () => {
+  const { isDarkMode } = useTheme()
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -121,7 +123,7 @@ const Resume: React.FC = () => {
 
   return (
     <motion.div
-      className="resume"
+      className={`resume ${isDarkMode ? 'dark' : 'light'}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
