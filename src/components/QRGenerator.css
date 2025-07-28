@@ -1,0 +1,264 @@
+.qr-generator {
+  padding: 3rem 2rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-generator-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+}
+
+.qr-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.qr-icon {
+  color: #667eea;
+  margin-bottom: 1rem;
+}
+
+.qr-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.qr-header p {
+  font-size: 1.1rem;
+  color: #718096;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.qr-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.input-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-section label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.qr-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+.qr-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: #ffffff;
+}
+
+.qr-input::placeholder {
+  color: #a0aec0;
+}
+
+.qr-output {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qr-display {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  width: 100%;
+}
+
+.qr-loading {
+  color: #667eea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-placeholder {
+  text-align: center;
+  color: #a0aec0;
+}
+
+.placeholder-icon {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.qr-placeholder p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.qr-image-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.qr-image {
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background: white;
+  padding: 1rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.qr-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.qr-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  color: white;
+}
+
+.download-btn:hover {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+  box-shadow: 0 6px 16px rgba(72, 187, 120, 0.3);
+}
+
+.copy-btn {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+}
+
+.copy-btn:hover {
+  background: linear-gradient(135deg, #3182ce, #2c5282);
+  box-shadow: 0 6px 16px rgba(66, 153, 225, 0.3);
+}
+
+.qr-action-btn:active {
+  transform: translateY(1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .qr-generator {
+    padding: 2rem 1rem;
+  }
+
+  .qr-generator-container {
+    padding: 2rem;
+  }
+
+  .qr-header h2 {
+    font-size: 2rem;
+  }
+
+  .qr-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .qr-input {
+    min-height: 100px;
+  }
+
+  .qr-display {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .qr-generator-container {
+    padding: 1.5rem;
+  }
+
+  .qr-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .qr-header p {
+    font-size: 1rem;
+  }
+
+  .qr-actions {
+    gap: 0.75rem;
+  }
+
+  .qr-action-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Animation classes */
+.qr-image-container {
+  animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Focus styles for accessibility */
+.qr-action-btn:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.qr-input:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}

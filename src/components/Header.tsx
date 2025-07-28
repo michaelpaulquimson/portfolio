@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Linkedin, Mail, Phone, MapPin } from 'lucide-react'
+import { Linkedin, Mail, Phone, MapPin, QrCode, FileText } from 'lucide-react'
 import './Header.css'
 
 const Header: React.FC = () => {
@@ -115,6 +115,29 @@ const Header: React.FC = () => {
             <Mail size={24} />
           </motion.a> */}
         </motion.div>
+
+        <motion.nav className="header-nav" variants={itemVariants}>
+          <motion.button
+            className="nav-link"
+            onClick={() => document.querySelector('.resume')?.scrollIntoView({ behavior: 'smooth' })}
+            whileHover={{ scale: 1.05, color: "#00f5ff" }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            <FileText size={18} />
+            <span>Resume</span>
+          </motion.button>
+          <motion.button
+            className="nav-link"
+            onClick={() => document.querySelector('.qr-generator')?.scrollIntoView({ behavior: 'smooth' })}
+            whileHover={{ scale: 1.05, color: "#00f5ff" }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            <QrCode size={18} />
+            <span>QR Generator</span>
+          </motion.button>
+        </motion.nav>
       </div>
     </motion.header>
   )

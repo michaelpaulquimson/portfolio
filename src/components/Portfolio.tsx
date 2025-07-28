@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from './Header.tsx'
 import Resume from './Resume.tsx'
+import QRGenerator from './QRGenerator.tsx'
 import './Portfolio.css'
 
 const Portfolio: React.FC = () => {
@@ -9,6 +10,7 @@ const Portfolio: React.FC = () => {
       <Header />
       <main className="main-content">
         <Resume />
+        <QRGenerator />
       </main>
     </div>
   )
