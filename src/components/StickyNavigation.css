@@ -30,6 +30,54 @@
   justify-content: space-between;
 }
 
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.scroll-to-top-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.scroll-to-top-nav:hover {
+  background: var(--button-bg);
+  color: #00f5ff;
+}
+
+.sticky-nav.dark .scroll-to-top-nav:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sticky-nav.light .scroll-to-top-nav:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.mp-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
 .nav-items {
   display: flex;
   align-items: center;
@@ -58,6 +106,15 @@
   color: #00f5ff;
 }
 
+.nav-linkedin {
+  color: #0077b5; /* LinkedIn blue */
+}
+
+.nav-linkedin:hover {
+  background: var(--button-bg);
+  color: #0077b5 !important;
+}
+
 .sticky-nav.dark .nav-item:hover {
   background: rgba(255, 255, 255, 0.1);
 }
@@ -73,49 +130,6 @@
 .nav-controls {
   display: flex;
   align-items: center;
-}
-
-.scroll-to-top {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 1000;
-  width: 56px;
-  height: 56px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.scroll-to-top.dark {
-  background: rgba(10, 10, 10, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.scroll-to-top.light {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.scroll-to-top:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-}
-
-.scroll-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Mobile responsive */
@@ -136,16 +150,8 @@
     display: none;
   }
 
-  .scroll-to-top {
-    bottom: 1rem;
-    right: 1rem;
-    width: 48px;
-    height: 48px;
-  }
-
-  .scroll-icon {
-    width: 28px;
-    height: 28px;
+  .nav-title {
+    display: none;
   }
 }
 

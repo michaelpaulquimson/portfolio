@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Linkedin, Mail, Phone, MapPin, QrCode, FileText, Globe, FolderOpen } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
@@ -6,6 +6,21 @@ import './Header.css'
 
 const Header: React.FC = () => {
   const { isDarkMode } = useTheme()
+  const [showHeaderNav, setShowHeaderNav] = useState(true)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const headerElement = document.querySelector('.header')
+      if (headerElement) {
+        const headerRect = headerElement.getBoundingClientRect()
+        // Hide header nav when header is mostly out of view
+        setShowHeaderNav(headerRect.bottom > 100)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
   const containerVariants = {
     hidden: { opacity: 0, y: -50 },
     visible: {
@@ -118,7 +133,13 @@ const Header: React.FC = () => {
           </motion.a> */}
         </motion.div>
 
-        <motion.nav className="header-nav" variants={itemVariants}>
+        {showHeaderNav && (
+          <motion.nav 
+            className="header-nav" 
+            variants={itemVariants}
+            animate={{ opacity: showHeaderNav ? 1 : 0, y: showHeaderNav ? 0 : -20 }}
+            transition={{ duration: 0.3 }}
+          >
           <motion.button
             className="nav-link"
             onClick={() => document.querySelector('.resume')?.scrollIntoView({ behavior: 'smooth' })}
@@ -160,6 +181,7 @@ const Header: React.FC = () => {
             <span>File Tools</span>
           </motion.button>
         </motion.nav>
+        )}
       </div>
     </motion.header>
   )
