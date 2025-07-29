@@ -50,26 +50,16 @@
   background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 50%, #e2e8f0 100%);
 }
 
-.dark-mode-toggle-container {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  z-index: 1000;
-}
-
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: calc(60px + 2rem); /* Add space for sticky nav */
 }
 
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem;
-  }
-
-  .dark-mode-toggle-container {
-    top: 1rem;
-    right: 1rem;
+    padding-top: calc(60px + 1rem); /* Add space for sticky nav on mobile */
   }
 }

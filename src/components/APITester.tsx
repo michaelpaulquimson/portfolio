@@ -226,6 +226,7 @@ const APITester: React.FC = () => {
 
   return (
     <motion.section
+      id="api-tester"
       className={`api-tester ${isDarkMode ? 'dark' : 'light'}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

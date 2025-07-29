@@ -159,6 +159,7 @@ const Resume: React.FC = () => {
 
   return (
     <motion.div
+      id="resume"
       className={`resume ${isDarkMode ? 'dark' : 'light'}`}
       variants={containerVariants}
       initial="hidden"

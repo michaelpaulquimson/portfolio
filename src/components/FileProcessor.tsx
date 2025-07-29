@@ -151,6 +151,7 @@ const FileProcessor: React.FC = () => {
 
   return (
     <motion.section
+      id="file-processor"
       className={`file-processor ${isDarkMode ? 'dark' : 'light'}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
