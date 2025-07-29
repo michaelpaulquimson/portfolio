@@ -61,6 +61,29 @@ const Resume: React.FC = () => {
       return `${years} ${years === 1 ? 'yr' : 'yrs'} ${months} ${months === 1 ? 'mo' : 'mos'}`
     }
   }
+
+  // Function to calculate total years of experience from all positions
+  const calculateTotalExperience = (): string => {
+    // Find the earliest start date from all experiences
+    // Based on the experiences, the earliest is JUL 2017
+    const earliestStartMonth = 'JUL'
+    const earliestStartYear = 2017
+    
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    const currentMonth = now.getMonth() + 1
+    
+    const monthMap: { [key: string]: number } = {
+      'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'MAY': 5, 'JUN': 6,
+      'JUL': 7, 'AUG': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DEC': 12
+    }
+    
+    const startMonthNum = monthMap[earliestStartMonth]
+    const totalMonths = (currentYear - earliestStartYear) * 12 + (currentMonth - startMonthNum)
+    const totalYears = Math.floor(totalMonths / 12)
+    
+    return `${totalYears}+`
+  }
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -155,7 +178,7 @@ const Resume: React.FC = () => {
     }
   ]
 
-  const summary = "Passionate developer with 7+ years of experience in full-stack software development. Skilled in frontend and backend, including database schema design, using JavaScript, TypeScript, and Python. Familiar with cloud platforms like AWS and Google Firebase. Co-authored the development of a mobile app for a non-profit using Flutter and Dart, and continue to maintain and add new features. Enjoys solving complex problems with user-focused solutions and exploring new technologies, including AI to streamline project delivery. Always eager to learn and adapt to new challenges."
+  const summary = `Passionate developer with ${calculateTotalExperience()} years of experience in full-stack software development. Skilled in frontend and backend, including database schema design, using JavaScript, TypeScript, and Python. Familiar with cloud platforms like AWS and Google Firebase. Co-authored the development of a mobile app for a non-profit using Flutter and Dart, and continue to maintain and add new features. Enjoys solving complex problems with user-focused solutions and exploring new technologies, including AI to streamline project delivery. Always eager to learn and adapt to new challenges.`
 
   return (
     <motion.div
