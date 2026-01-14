@@ -73,9 +73,10 @@ const QRGenerator: React.FC = () => {
     <motion.section
       id="qr-generator"
       className={`qr-generator ${isDarkMode ? 'dark' : 'light'}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <div className="qr-generator-container">
         <motion.div 

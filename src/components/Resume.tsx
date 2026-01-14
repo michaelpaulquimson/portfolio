@@ -26,7 +26,7 @@ interface CertificationItem {
 
 const Resume: React.FC = () => {
   const { isDarkMode } = useTheme()
-  
+
   // Function to calculate duration from start date to present
   const calculateDurationFromStart = (startMonth: string, startYear: number): string => {
     const now = new Date()
@@ -93,15 +93,6 @@ const Resume: React.FC = () => {
         staggerChildren: 0.1,
         delayChildren: 0.3
       }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 }
     }
   }
 
@@ -184,11 +175,18 @@ const Resume: React.FC = () => {
     <motion.div
       id="resume"
       className={`resume ${isDarkMode ? 'dark' : 'light'}`}
-      variants={containerVariants}
       initial="hidden"
-      animate="visible"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.1 }}
+      variants={containerVariants}
     >
-      <motion.section className="summary-section" variants={itemVariants}>
+      <motion.section
+        className="summary-section"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <h2 className="section-title">
           <span className="title-text">Summary</span>
           <div className="title-underline"></div>
@@ -209,7 +207,13 @@ const Resume: React.FC = () => {
         </motion.p>
       </motion.section>
 
-      <motion.section className="experience-section" variants={itemVariants}>
+      <motion.section
+        className="experience-section"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
         <h2 className="section-title">
           <span className="title-text">Experience</span>
           <div className="title-underline"></div>
@@ -219,14 +223,16 @@ const Resume: React.FC = () => {
             <motion.div
               key={index}
               className="experience-item"
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.02, 
-                boxShadow: isDarkMode 
-                  ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
-                  : "0 10px 30px rgba(37, 99, 235, 0.1)" 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: isDarkMode
+                  ? "0 10px 30px rgba(0, 245, 255, 0.1)"
+                  : "0 10px 30px rgba(37, 99, 235, 0.1)"
               }}
-              transition={{ duration: 0.3 }}
             >
               <div className="experience-header">
                 <div className="experience-title-group">
@@ -262,7 +268,13 @@ const Resume: React.FC = () => {
       </motion.section>
 
       <div className="education-certifications-row">
-        <motion.section className="education-section" variants={itemVariants}>
+        <motion.section
+          className="education-section"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+        >
           <h2 className="section-title">
             <span className="title-text">Education</span>
             <div className="title-underline"></div>
@@ -294,7 +306,13 @@ const Resume: React.FC = () => {
           ))}
         </motion.section>
 
-        <motion.section className="certifications-section" variants={itemVariants}>
+        <motion.section
+          className="certifications-section"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
+        >
           <h2 className="section-title">
             <span className="title-text">Certifications</span>
             <div className="title-underline"></div>

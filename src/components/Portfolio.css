@@ -1,63 +1,75 @@
-:root {
-  --primary-color: #667eea;
-  --primary-gradient: linear-gradient(135deg, #667eea, #764ba2);
-  --success-color: #48bb78;
-  --warning-color: #ed8936;
-  --error-color: #f56565;
-  --border-radius: 12px;
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s ease;
-}
-
-[data-theme="dark"] {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #1a1a2e;
-  --bg-tertiary: rgba(255, 255, 255, 0.05);
-  --text-primary: #ffffff;
-  --text-secondary: #a0aec0;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --input-bg: rgba(255, 255, 255, 0.05);
-  --input-border: rgba(255, 255, 255, 0.15);
-  --button-bg: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f8fafc;
-  --text-primary: #1a202c;
-  --text-secondary: #4a5568;
-  --border-color: #cbd5e0;
-  --input-bg: #ffffff;
-  --input-border: #cbd5e0;
-  --button-bg: #f7fafc;
-}
-
 .portfolio {
   min-height: 100vh;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  transition: var(--transition);
+  transition: background 0.3s ease;
   position: relative;
+  font-family: var(--font-body);
 }
 
 .portfolio.dark {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  background: var(--dark-bg-primary);
+  color: var(--dark-text-primary);
 }
 
 .portfolio.light {
-  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 50%, #e2e8f0 100%);
+  background: var(--light-bg-primary);
+  color: var(--light-text-primary);
 }
 
 .main-content {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection colors */
+::selection {
+  background: var(--dark-accent-cyan);
+  color: var(--dark-bg-primary);
+}
+
+.portfolio.light ::selection {
+  background: var(--light-accent-blue);
+  color: var(--light-bg-primary);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+.portfolio.dark ::-webkit-scrollbar-track {
+  background: var(--dark-bg-secondary);
+}
+
+.portfolio.dark ::-webkit-scrollbar-thumb {
+  background: var(--dark-accent-cyan);
+  border-radius: 2px;
+}
+
+.portfolio.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-accent-blue);
+}
+
+.portfolio.light ::-webkit-scrollbar-track {
+  background: var(--light-bg-secondary);
+}
+
+.portfolio.light ::-webkit-scrollbar-thumb {
+  background: var(--light-accent-blue);
+  border-radius: 2px;
+}
+
+.portfolio.light ::-webkit-scrollbar-thumb:hover {
+  background: var(--light-accent-cyan);
 }
 
 @media (max-width: 768px) {
   .main-content {
-    padding: 1rem;
+    padding: 0;
   }
 }

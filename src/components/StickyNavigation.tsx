@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FileText, QrCode, Globe, FolderOpen, Linkedin } from 'lucide-react'
+import { FileText, QrCode, Globe, FolderOpen, Linkedin, Layers } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
 import DarkModeToggle from './DarkModeToggle'
 import './StickyNavigation.css'
+
+// Constants
+const STICKY_NAV_SCROLL_THRESHOLD = 500
+
+// Type definitions
+interface NavItem {
+  id: string
+  icon: LucideIcon
+  label: string
+}
 
 const StickyNavigation: React.FC = () => {
   const { isDarkMode } = useTheme()
@@ -11,31 +22,31 @@ const StickyNavigation: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Simple approach: show sticky nav after scrolling past 500px
-      const scrolled = window.scrollY > 500
+      const scrolled = window.scrollY > STICKY_NAV_SCROLL_THRESHOLD
       setShowStickyNav(scrolled)
     }
 
     // Call once to set initial state
     handleScroll()
-    
-    window.addEventListener('scroll', handleScroll)
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = (sectionId: string): void => {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
-  const scrollToTop = () => {
+  const scrollToTop = (): void => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { id: 'resume', icon: FileText, label: 'Resume' },
+    { id: 'projects', icon: Layers, label: 'Projects' },
     { id: 'qr-generator', icon: QrCode, label: 'QR Generator' },
     { id: 'api-tester', icon: Globe, label: 'API Tester' },
     { id: 'file-processor', icon: FolderOpen, label: 'File Tools' },
@@ -64,13 +75,39 @@ const StickyNavigation: React.FC = () => {
                 <div className="mp-icon">
                   <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                      <linearGradient id="navGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#00f5ff" stopOpacity="1" />
-                        <stop offset="100%" stopColor="#6366f1" stopOpacity="1" />
+                      <linearGradient id={`navGradient-${isDarkMode ? 'dark' : 'light'}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                        {isDarkMode ? (
+                          <>
+                            <stop offset="0%" stopColor="#00d9ff" stopOpacity="1" />
+                            <stop offset="100%" stopColor="#00a8cc" stopOpacity="1" />
+                          </>
+                        ) : (
+                          <>
+                            <stop offset="0%" stopColor="#00aaff" stopOpacity="1" />
+                            <stop offset="100%" stopColor="#0088ff" stopOpacity="1" />
+                          </>
+                        )}
                       </linearGradient>
                     </defs>
-                    <circle cx="16" cy="16" r="14" fill="url(#navGradient)" stroke="#00f5ff" strokeWidth="1"/>
-                    <text x="16" y="21" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" textAnchor="middle" fill="white">MP</text>
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="14"
+                      fill={`url(#navGradient-${isDarkMode ? 'dark' : 'light'})`}
+                      stroke={isDarkMode ? '#00d9ff' : '#0099ff'}
+                      strokeWidth="1"
+                    />
+                    <text
+                      x="16"
+                      y="21"
+                      fontFamily="Playfair Display, serif"
+                      fontSize="12"
+                      fontWeight="bold"
+                      textAnchor="middle"
+                      fill={isDarkMode ? '#0d1117' : '#ffffff'}
+                    >
+                      MP
+                    </text>
                   </svg>
                 </div>
                 <span className="nav-title">Michael Paul Quimson</span>

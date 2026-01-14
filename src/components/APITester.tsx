@@ -72,13 +72,13 @@ const APITester: React.FC = () => {
     },
     {
       name: "Quotes API",
-      url: "https://api.quotable.io/random",
+      url: "https://zenquotes.io/api/random",
       method: "GET",
       description: "Random inspirational quotes"
     },
     {
       name: "REST Countries",
-      url: "https://restcountries.com/v3.1/all",
+      url: "https://restcountries.com/v3.1/all?fields=name,capital,population,flags,region",
       method: "GET",
       description: "Information about all countries"
     },
@@ -228,9 +228,10 @@ const APITester: React.FC = () => {
     <motion.section
       id="api-tester"
       className={`api-tester ${isDarkMode ? 'dark' : 'light'}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <div className="api-tester-container">
         <motion.div 
