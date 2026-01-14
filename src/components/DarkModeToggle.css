@@ -12,17 +12,17 @@
 }
 
 .dark-mode-toggle.dark {
-  background: linear-gradient(135deg, #4a5568, #2d3748);
-  box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.3),
-    0 4px 8px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #00ffff, #0080ff);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 255, 255, 0.3),
+    0 4px 12px rgba(0, 255, 255, 0.3);
 }
 
 .dark-mode-toggle.light {
-  background: linear-gradient(135deg, #ffd700, #ffa500);
-  box-shadow: 
+  background: linear-gradient(135deg, #00aaff, #0088ff);
+  box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.3),
-    0 4px 8px rgba(255, 215, 0, 0.3);
+    0 4px 12px rgba(0, 136, 255, 0.3);
 }
 
 .dark-mode-toggle:hover {
@@ -30,7 +30,7 @@
 }
 
 .dark-mode-toggle:focus-visible {
-  outline: 2px solid var(--primary-color, #667eea);
+  outline: 2px solid #00ffff;
   outline-offset: 2px;
 }
 
@@ -67,11 +67,11 @@
 }
 
 .dark-mode-toggle.dark .toggle-icon {
-  color: #90cdf4;
+  color: #0d1117;
 }
 
 .dark-mode-toggle.light .toggle-icon {
-  color: #f6ad55;
+  color: #ffffff;
 }
 
 /* Animation for the background when toggling */
@@ -92,11 +92,11 @@
 }
 
 .dark-mode-toggle.dark:hover::before {
-  background: linear-gradient(135deg, #63b3ed, #4299e1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
 }
 
 .dark-mode-toggle.light:hover::before {
-  background: linear-gradient(135deg, #fed7aa, #fdba74);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
 }
 
 /* Responsive adjustments */
