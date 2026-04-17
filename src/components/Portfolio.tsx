@@ -1,8 +1,8 @@
-import React, { useRef } from 'react'
+import React, { useRef, lazy, Suspense } from 'react'
 import Header from './Header'
 import Resume from './Resume'
-import Projects from './Projects'
-import ToolsSection from './ToolsSection'
+const Projects = lazy(() => import('./Projects'))
+const ToolsSection = lazy(() => import('./ToolsSection'))
 import DotNavigation from './DotNavigation'
 import DarkModeToggle from './DarkModeToggle'
 import ScrollToTop from './ScrollToTop'
@@ -34,8 +34,10 @@ const Portfolio: React.FC = () => {
 
       <main className="portfolio__main">
         <Resume sectionRef={resumeRef} />
-        <Projects sectionRef={projectsRef} />
-        <ToolsSection sectionRef={toolsRef} />
+        <Suspense fallback={<div style={{ height: '100vh' }} />}>
+          <Projects sectionRef={projectsRef} />
+          <ToolsSection sectionRef={toolsRef} />
+        </Suspense>
       </main>
 
       <ScrollToTop />
