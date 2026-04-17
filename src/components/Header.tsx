@@ -8,6 +8,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
+  const orbRef = useRef<HTMLDivElement>(null)
   const eyebrowRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLHeadingElement>(null)
   const dividerRef = useRef<HTMLDivElement>(null)
@@ -24,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
       if (prefersReducedMotion) {
         gsap.set(
           [
+            orbRef.current,
             eyebrowRef.current,
             nameRef.current,
             dividerRef.current,
@@ -38,6 +40,7 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
 
       gsap.set(
         [
+          orbRef.current,
           eyebrowRef.current,
           nameRef.current,
           dividerRef.current,
@@ -49,7 +52,8 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
       )
 
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.2)
+      tl.to(orbRef.current, { opacity: 1, duration: 0.8 }, 0)
+        .fromTo(eyebrowRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6 }, 0.2)
         .fromTo(nameRef.current, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.9 }, 0.35)
         .fromTo(dividerRef.current, { opacity: 1, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.4 }, 0.75)
         .fromTo(roleRef.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 }, 0.85)
@@ -71,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
       className="hero"
     >
       <div className="hero__grid-bg" aria-hidden="true" />
-      <GlowOrb size={360} />
+      <div ref={orbRef}><GlowOrb /></div>
 
       <div className="hero__content">
         <div ref={eyebrowRef} className="hero__eyebrow" aria-hidden="true">
