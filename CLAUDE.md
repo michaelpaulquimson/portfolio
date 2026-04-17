@@ -126,26 +126,25 @@ const items = [] // BAD - what type are the items?
 #### 1. Use CSS Custom Properties (Variables)
 ```css
 :root {
-  /* Color System */
-  --color-primary: #d4af37;
-  --color-secondary: #1b4332;
-  --color-text-primary: #2d2d2d;
+  /* Design tokens — single source of truth */
+  --bg-base: #050510;
+  --bg-surface: rgba(255,255,255,0.02);
+  --accent-primary: #00ffff;
+  --accent-secondary: #0080ff;
+  --accent-glow: rgba(0,255,255,0.25);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255,255,255,0.45);
+  --border-accent: rgba(0,255,255,0.15);
 
-  /* Spacing System */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  /* Typography */
-  --font-heading: 'Playfair Display', serif;
-  --font-body: 'IBM Plex Sans', sans-serif;
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 300ms cubic-bezier(0.4,0,0.2,1);
 
-  /* Transitions */
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 }
 ```
 
