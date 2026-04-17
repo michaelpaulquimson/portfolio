@@ -1,346 +1,169 @@
 import React from 'react'
-import { motion } from 'framer-motion'
-import { Calendar, MapPin, Award, GraduationCap } from 'lucide-react'
-import { useTheme } from '../contexts/ThemeContext'
+import SectionWrapper from './SectionWrapper'
 import './Resume.css'
 
 interface ExperienceItem {
   title: string
   company: string
-  location: string
-  duration: string
-  description: string[]
+  period: string
+  bullets: string[]
+  isCurrent: boolean
 }
 
-interface EducationItem {
-  degree: string
-  school: string
-  duration: string
-  location: string
+interface ResumeProps {
+  sectionRef?: React.RefObject<HTMLElement | null>
 }
 
-interface CertificationItem {
-  name: string
-  date: string
+const EXPERIENCE: ExperienceItem[] = [
+  {
+    title: 'Senior Solutions Architect',
+    company: 'Eclaro Business Solutions',
+    period: 'FEB 2025 – Present',
+    isCurrent: true,
+    bullets: [
+      'Provide technical guidance on system development and integration',
+      'Review code for alignment with architecture standards',
+      'Support resolution of complex production issues',
+    ],
+  },
+  {
+    title: 'Senior Full Stack Developer',
+    company: 'Eclaro Business Solutions',
+    period: 'JUN 2021 – FEB 2025 · 3 yrs 11 mos',
+    isCurrent: false,
+    bullets: [
+      'Developed features, fixed bugs, and provided production support',
+      'Maintained clear developer documentation for future reference',
+      'Improved performance through debugging and refactoring',
+    ],
+  },
+  {
+    title: 'Application Developer',
+    company: 'AXA Philippines',
+    period: 'FEB 2020 – JUN 2021 · 1 yr 4 mos',
+    isCurrent: false,
+    bullets: [
+      'Integrated third-party APIs to enhance application functionality',
+      'Assessed design feasibility based on requirements',
+      'Collaborated with the team to resolve development challenges',
+    ],
+  },
+  {
+    title: 'Full Stack Developer',
+    company: 'Collabera Technologies',
+    period: 'JUN 2019 – FEB 2020 · 8 mos',
+    isCurrent: false,
+    bullets: [
+      'Identified and fixed defects to resolve user-reported issues',
+      'Participated in code reviews and pair programming',
+    ],
+  },
+  {
+    title: 'Full Stack Developer',
+    company: 'LakbayPH Travel Services',
+    period: 'JUL 2017 – MAY 2019 · 1 yr 11 mos',
+    isCurrent: false,
+    bullets: [
+      'Designed database schemas and built mobile-friendly web app',
+      'Developed and integrated RESTful APIs',
+    ],
+  },
+]
+
+const PRIMARY_SKILLS = ['React', 'TypeScript', 'Node.js', 'Swift', 'Flutter', 'Python']
+const OTHER_SKILLS = [
+  'React Native', 'PostgreSQL', 'AWS', 'Firebase', 'Docker',
+  'GraphQL', 'REST APIs', 'Dart', 'Git', 'Vite',
+]
+
+const calculateTotalYears = (): string => {
+  const start = new Date(2017, 6)
+  const now = new Date()
+  const totalMonths =
+    (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth())
+  return `${Math.floor(totalMonths / 12)}+`
 }
 
-const Resume: React.FC = () => {
-  const { isDarkMode } = useTheme()
-
-  // Function to calculate duration from start date to present
-  const calculateDurationFromStart = (startMonth: string, startYear: number): string => {
-    const now = new Date()
-    const currentYear = now.getFullYear()
-    const currentMonth = now.getMonth() + 1 // getMonth() returns 0-11
-    
-    // Convert month name to number
-    const monthMap: { [key: string]: number } = {
-      'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'MAY': 5, 'JUN': 6,
-      'JUL': 7, 'AUG': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DEC': 12
-    }
-    
-    const startMonthNum = monthMap[startMonth]
-    
-    let totalMonths = (currentYear - startYear) * 12 + (currentMonth - startMonthNum)
-    
-    // If we haven't reached the start month in the current year, subtract a month
-    if (totalMonths < 0) {
-      totalMonths = 0
-    }
-    
-    const years = Math.floor(totalMonths / 12)
-    const months = totalMonths % 12
-    
-    if (years === 0 && months === 0) {
-      return "Less than 1 month"
-    } else if (years === 0) {
-      return `${months} ${months === 1 ? 'mo' : 'mos'}`
-    } else if (months === 0) {
-      return `${years} ${years === 1 ? 'yr' : 'yrs'}`
-    } else {
-      return `${years} ${years === 1 ? 'yr' : 'yrs'} ${months} ${months === 1 ? 'mo' : 'mos'}`
-    }
-  }
-
-  // Function to calculate total years of experience from all positions
-  const calculateTotalExperience = (): string => {
-    // Find the earliest start date from all experiences
-    // Based on the experiences, the earliest is JUL 2017
-    const earliestStartMonth = 'JUL'
-    const earliestStartYear = 2017
-    
-    const now = new Date()
-    const currentYear = now.getFullYear()
-    const currentMonth = now.getMonth() + 1
-    
-    const monthMap: { [key: string]: number } = {
-      'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'MAY': 5, 'JUN': 6,
-      'JUL': 7, 'AUG': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DEC': 12
-    }
-    
-    const startMonthNum = monthMap[earliestStartMonth]
-    const totalMonths = (currentYear - earliestStartYear) * 12 + (currentMonth - startMonthNum)
-    const totalYears = Math.floor(totalMonths / 12)
-    
-    return `${totalYears}+`
-  }
-  
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
-  }
-
-  const experiences: ExperienceItem[] = [
-    {
-      title: "Senior Solutions Architect",
-      company: "Eclaro Business Solutions, Philippines",
-      location: "Philippines",
-      duration: `FEB 2025 - PRESENT (${calculateDurationFromStart('FEB', 2025)})`,
-      description: [
-        "Provide technical guidance on system development and integration",
-        "Review code for alignment with architecture standards",
-        "Support resolution of complex production issues"
-      ]
-    },
-    {
-      title: "Senior Full Stack Developer",
-      company: "Eclaro Business Solutions, Philippines",
-      location: "Philippines",
-      duration: "JUN 2021 - FEB 2025 (3 yrs 11 mos)",
-      description: [
-        "Developed features, fixed bugs, and provided production support",
-        "Maintained clear developer documentation for future reference",
-        "Improved performance through debugging, refactoring, and applying best practices"
-      ]
-    },
-    {
-      title: "Application Developer",
-      company: "AXA Philippines",
-      location: "Philippines",
-      duration: "FEB 2020 - JUN 2021 (1 yr 4 mos)",
-      description: [
-        "Integrated third-party APIs to enhance application functionality",
-        "Assessed design feasibility based on user and software requirements",
-        "Collaborated with the team to resolve development challenges"
-      ]
-    },
-    {
-      title: "Full Stack Developer",
-      company: "Collabera Technologies Private Limited, Philippines",
-      location: "Philippines",
-      duration: "JUN 2019 - FEB 2020 (8 mos)",
-      description: [
-        "Identified and fixed defects to resolve user-reported issues",
-        "Participated in code reviews and pair programming to uphold quality"
-      ]
-    },
-    {
-      title: "Full Stack Developer",
-      company: "LakbayPH Travel Services Inc., Philippines",
-      location: "Philippines",
-      duration: "JUL 2017 - MAY 2019 (1 yr 11 mos)",
-      description: [
-        "Designed database schemas",
-        "Built mobile-friendly website",
-        "Developed and integrated RESTful APIs"
-      ]
-    }
-  ]
-
-  const education: EducationItem[] = [
-    {
-      degree: "Bachelor of Science, Information Technology",
-      school: "Informatics College Eastwood",
-      duration: "2013 - 2016",
-      location: "Philippines"
-    }
-  ]
-
-  const certifications: CertificationItem[] = [
-    {
-      name: "AWS Certified Cloud Practitioner",
-      date: "(Feb 2021 - Feb 2024)"
-    }
-  ]
-
-  const summary = `Passionate developer with ${calculateTotalExperience()} years of experience in full-stack software development. Skilled in frontend and backend, including database schema design, using JavaScript, TypeScript, and Python. Familiar with cloud platforms like AWS and Google Firebase. Co-authored the development of a mobile app for a non-profit using Flutter and Dart, and continue to maintain and add new features. Enjoys solving complex problems with user-focused solutions and exploring new technologies, including AI to streamline project delivery. Always eager to learn and adapt to new challenges.`
-
+const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
   return (
-    <motion.div
-      id="resume"
-      className={`resume ${isDarkMode ? 'dark' : 'light'}`}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
-      variants={containerVariants}
-    >
-      <motion.section
-        className="summary-section"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <h2 className="section-title">
-          <span className="title-text">Summary</span>
-          <div className="title-underline"></div>
+    <SectionWrapper id="resume" className="resume" sectionRef={sectionRef}>
+      <div className="resume__header">
+        <div className="resume__section-label">// Experience</div>
+        <h2 className="resume__title">
+          {calculateTotalYears()} Years Building
+          <br />
+          Software That Matters
         </h2>
-        <motion.p 
-          className="summary-text"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          whileHover={{ 
-            scale: 1.02, 
-            boxShadow: isDarkMode 
-              ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
-              : "0 10px 30px rgba(37, 99, 235, 0.1)" 
-          }}
-        >
-          {summary}
-        </motion.p>
-      </motion.section>
-
-      <motion.section
-        className="experience-section"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <h2 className="section-title">
-          <span className="title-text">Experience</span>
-          <div className="title-underline"></div>
-        </h2>
-        <div className="experience-list">
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              className="experience-item"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              whileHover={{
-                scale: 1.02,
-                boxShadow: isDarkMode
-                  ? "0 10px 30px rgba(0, 245, 255, 0.1)"
-                  : "0 10px 30px rgba(37, 99, 235, 0.1)"
-              }}
-            >
-              <div className="experience-header">
-                <div className="experience-title-group">
-                  <h3 className="experience-title">{exp.title}</h3>
-                  <h4 className="experience-company">{exp.company}</h4>
-                </div>
-                <div className="experience-meta">
-                  <div className="duration">
-                    <Calendar size={16} />
-                    <span>{exp.duration}</span>
-                  </div>
-                  <div className="location">
-                    <MapPin size={16} />
-                    <span>{exp.location}</span>
-                  </div>
-                </div>
-              </div>
-              <ul className="experience-description">
-                {exp.description.map((item, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * i, duration: 0.4 }}
-                  >
-                    {item}
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
-
-      <div className="education-certifications-row">
-        <motion.section
-          className="education-section"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-        >
-          <h2 className="section-title">
-            <span className="title-text">Education</span>
-            <div className="title-underline"></div>
-          </h2>
-          {education.map((edu, index) => (
-            <motion.div
-              key={index}
-              className="education-item"
-              whileHover={{ 
-                scale: 1.02, 
-                boxShadow: isDarkMode 
-                  ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
-                  : "0 10px 30px rgba(37, 99, 235, 0.1)" 
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="education-header">
-                <GraduationCap size={20} className="education-icon" />
-                <div className="education-content">
-                  <h3 className="education-degree">{edu.degree}</h3>
-                  <h4 className="education-school">{edu.school}</h4>
-                  <div className="education-meta">
-                    <span className="education-duration">{edu.duration}</span>
-                    <span className="education-location">{edu.location}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.section>
-
-        <motion.section
-          className="certifications-section"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.7, delay: 0.4 }}
-        >
-          <h2 className="section-title">
-            <span className="title-text">Certifications</span>
-            <div className="title-underline"></div>
-          </h2>
-          {certifications.map((cert, index) => (
-            <motion.div
-              key={index}
-              className="certification-item"
-              whileHover={{ 
-                scale: 1.02, 
-                boxShadow: isDarkMode 
-                  ? "0 10px 30px rgba(0, 245, 255, 0.1)" 
-                  : "0 10px 30px rgba(37, 99, 235, 0.1)" 
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="certification-header">
-                <Award size={20} className="certification-icon" />
-                <div className="certification-content">
-                  <h3 className="certification-name">{cert.name}</h3>
-                  <span className="certification-date">{cert.date}</span>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.section>
+        <p className="resume__summary">
+          Passionate full-stack engineer spanning frontend, backend, and mobile. Skilled in
+          JavaScript, TypeScript, and Python across cloud platforms. Co-built a Flutter app
+          serving a non-profit community.
+        </p>
       </div>
-    </motion.div>
+
+      <div className="resume__body">
+        <div>
+          <div className="timeline__col-title">Work History</div>
+          <div className="timeline">
+            {EXPERIENCE.map((exp, i) => (
+              <div key={i} className="timeline__item">
+                <div className="timeline__spine">
+                  <div
+                    className={`timeline__dot${exp.isCurrent ? '' : ' timeline__dot--past'}`}
+                  />
+                  {i < EXPERIENCE.length - 1 && <div className="timeline__line" />}
+                </div>
+                <div className="timeline__content">
+                  <div className="timeline__company">{exp.company}</div>
+                  <div className="timeline__role">{exp.title}</div>
+                  <div className="timeline__period">{exp.period}</div>
+                  <ul className="timeline__bullets">
+                    {exp.bullets.map((b, j) => (
+                      <li key={j}>{b}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="skills__col-title">Skills</div>
+          <div className="skills__grid">
+            {PRIMARY_SKILLS.map((s) => (
+              <span key={s} className="skill-chip skill-chip--primary">
+                {s}
+              </span>
+            ))}
+            {OTHER_SKILLS.map((s) => (
+              <span key={s} className="skill-chip">
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="resume__bottom">
+        <div>
+          <div className="edu-cert__col-title">Education</div>
+          <div className="edu-cert__card">
+            <div className="edu-cert__name">B.S. Information Technology</div>
+            <div className="edu-cert__sub">Informatics College Eastwood</div>
+            <div className="edu-cert__date">2013 – 2016 · Philippines</div>
+          </div>
+        </div>
+
+        <div>
+          <div className="edu-cert__col-title">Certifications</div>
+          <div className="edu-cert__card">
+            <div className="edu-cert__name">AWS Certified Cloud Practitioner</div>
+            <div className="edu-cert__date">Feb 2021 – Feb 2024</div>
+          </div>
+        </div>
+      </div>
+    </SectionWrapper>
   )
 }
 
