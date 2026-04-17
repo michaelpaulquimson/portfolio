@@ -1,0 +1,42 @@
+.glow-orb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-orb__core {
+  width: var(--orb-size, 320px);
+  height: var(--orb-size, 320px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 255, 255, 0.14) 0%,
+    rgba(0, 128, 255, 0.07) 40%,
+    transparent 70%
+  );
+  filter: blur(28px);
+}
+
+.glow-orb__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid var(--border-accent);
+}
+
+.glow-orb__ring--inner {
+  width: calc(var(--orb-size, 320px) * 0.625);
+  height: calc(var(--orb-size, 320px) * 0.625);
+  opacity: 0.5;
+}
+
+.glow-orb__ring--outer {
+  width: calc(var(--orb-size, 320px) * 0.875);
+  height: calc(var(--orb-size, 320px) * 0.875);
+  opacity: 0.25;
+}
