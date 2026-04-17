@@ -110,7 +110,9 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
 
     document.addEventListener('keydown', handleKeyDown)
     document.body.style.overflow = 'hidden'
-    modalRef.current?.focus()
+    requestAnimationFrame(() => {
+      modalRef.current?.focus()
+    })
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)

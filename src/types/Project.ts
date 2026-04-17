@@ -2,8 +2,6 @@
  * Project type definitions
  */
 
-import type { ComponentType } from 'react'
-
 export type ProjectCategory = 'web' | 'mobile' | 'fullstack' | 'tool'
 
 export interface Project {
@@ -29,5 +27,4 @@ export interface Project {
 export interface CategoryFilter {
   id: string
   label: string
-  icon: ComponentType<{ size?: number }>
 }

@@ -1,5 +1,4 @@
 import type { Project, CategoryFilter } from '../types/Project'
-import { Layers } from 'lucide-react'
 
 /**
  * Project portfolio data
@@ -42,9 +41,9 @@ export const PROJECTS: Project[] = [
  * Category filter configuration
  */
 export const CATEGORY_FILTERS: CategoryFilter[] = [
-  { id: 'all', label: 'All', icon: Layers },
-  { id: 'fullstack', label: 'Full Stack', icon: Layers },
-  { id: 'mobile', label: 'Mobile', icon: Layers },
-  { id: 'web', label: 'Web', icon: Layers },
-  { id: 'tool', label: 'Tools', icon: Layers }
+  { id: 'all', label: 'All' },
+  { id: 'fullstack', label: 'Full Stack' },
+  { id: 'mobile', label: 'Mobile' },
+  { id: 'web', label: 'Web' },
+  { id: 'tool', label: 'Tools' }
 ]

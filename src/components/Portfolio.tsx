@@ -1,4 +1,4 @@
-import React, { useRef, lazy, Suspense } from 'react'
+import React, { useRef, lazy, Suspense, useMemo } from 'react'
 import Header from './Header'
 import Resume from './Resume'
 import DotNavigation from './DotNavigation'
@@ -17,12 +17,12 @@ const Portfolio: React.FC = () => {
   const projectsRef = useRef<HTMLElement>(null)
   const toolsRef = useRef<HTMLElement>(null)
 
-  const sectionRefs: SectionRefs = {
+  const sectionRefs: SectionRefs = useMemo(() => ({
     hero: heroRef,
     resume: resumeRef,
     projects: projectsRef,
     tools: toolsRef,
-  }
+  }), [])
 
   const activeSection = useScrollSection(sectionRefs)
 
@@ -37,6 +37,8 @@ const Portfolio: React.FC = () => {
         <Resume sectionRef={resumeRef} />
         <Suspense fallback={<div style={{ height: '100vh' }} />}>
           <Projects sectionRef={projectsRef} />
+        </Suspense>
+        <Suspense fallback={<div style={{ height: '60vh' }} />}>
           <ToolsSection sectionRef={toolsRef} />
         </Suspense>
       </main>
