@@ -12,6 +12,18 @@ import type { Project, CategoryFilter } from '../types/Project'
  */
 export const PROJECTS: Project[] = [
   {
+    id: 3,
+    title: "Myles Yeo Tan — Portfolio",
+    description: "Production portfolio for a crypto trader, certified financial planner, and public speaker with SSR and transactional email.",
+    longDescription: "Production portfolio website for a crypto trader, certified financial planner, and public speaker. Built with Next.js 16 and TypeScript, featuring server-side rendering on all pages with JSON-LD structured data (Person, WebSite, ProfessionalService schemas). REST API routes handle contact and newsletter with server-side validation. Full security header suite — CSP, HSTS, X-Frame-Options, Permissions-Policy. 30 Jest tests covering API validation, UI components, and error handling. SEO-optimized with sitemap, robots.txt, Open Graph, Twitter Cards, and AI-crawler-friendly llms.txt.",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Radix UI", "Resend", "Google Analytics", "Vercel"],
+    category: "web",
+    year: "2025",
+    featured: false,
+    liveUrl: "https://mylesyeotan.com",
+    githubUrl: "https://github.com/startupenablr-dev/mylestan-website-v2"
+  },
+  {
     id: 2,
     title: "Favor App",
     description: "Church event management with QR code check-in and registration",
