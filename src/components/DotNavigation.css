@@ -22,9 +22,13 @@
   font-size: 0.625rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent-primary);
-  opacity: 0.8;
+  color: var(--text-dim);
   white-space: nowrap;
+  transition: color var(--transition-fast);
+}
+
+.dot-nav__label--active {
+  color: var(--accent-primary);
 }
 
 .dot-nav__dot {

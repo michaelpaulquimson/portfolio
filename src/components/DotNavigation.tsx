@@ -1,5 +1,4 @@
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { sections, sectionLabels } from '../constants/designTokens'
 import type { SectionId } from '../constants/designTokens'
 import './DotNavigation.css'
@@ -17,19 +16,11 @@ const DotNavigation: React.FC<DotNavigationProps> = ({ activeSection }) => {
     <nav className="dot-nav" aria-label="Page sections">
       {sections.map((id) => (
         <div key={id} className="dot-nav__item">
-          <AnimatePresence>
-            {activeSection === id && (
-              <motion.span
-                className="dot-nav__label"
-                initial={{ opacity: 0, x: 6 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 6 }}
-                transition={{ duration: 0.2 }}
-              >
-                {sectionLabels[id]}
-              </motion.span>
-            )}
-          </AnimatePresence>
+          <span
+            className={`dot-nav__label${activeSection === id ? ' dot-nav__label--active' : ''}`}
+          >
+            {sectionLabels[id]}
+          </span>
           <button
             className={`dot-nav__dot${activeSection === id ? ' dot-nav__dot--active' : ''}`}
             onClick={() => handleClick(id)}
