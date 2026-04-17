@@ -1,14 +1,15 @@
 import React, { useRef, lazy, Suspense } from 'react'
 import Header from './Header'
 import Resume from './Resume'
-const Projects = lazy(() => import('./Projects'))
-const ToolsSection = lazy(() => import('./ToolsSection'))
 import DotNavigation from './DotNavigation'
 import DarkModeToggle from './DarkModeToggle'
 import ScrollToTop from './ScrollToTop'
 import { useScrollSection } from '../hooks/useScrollSection'
 import type { SectionRefs } from '../hooks/useScrollSection'
 import './Portfolio.css'
+
+const Projects = lazy(() => import('./Projects'))
+const ToolsSection = lazy(() => import('./ToolsSection'))
 
 const Portfolio: React.FC = () => {
   const heroRef = useRef<HTMLElement>(null)

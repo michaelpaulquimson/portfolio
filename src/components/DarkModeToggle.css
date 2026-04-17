@@ -23,7 +23,7 @@
 }
 
 .dark-mode-toggle:hover {
-  background: rgba(0, 255, 255, 0.08);
+  background: var(--bg-glass);
   box-shadow: 0 0 12px var(--accent-glow);
 }
 
