@@ -36,16 +36,6 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
         </button>
       </div>
 
-      <div className="tools-section__preview">
-        {TOOLS.map((t) => (
-          <div key={t.id} className="tool-preview-card">
-            <div className="tool-preview-card__icon">{t.icon}</div>
-            <div className="tool-preview-card__name">{t.name}</div>
-            <div className="tool-preview-card__sub">{t.sub}</div>
-          </div>
-        ))}
-      </div>
-
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -56,10 +46,21 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
           >
+            <div className="tools-section__preview">
+              {TOOLS.map((t) => (
+                <div key={t.id} className="tool-preview-card">
+                  <div className="tool-preview-card__icon">{t.icon}</div>
+                  <div className="tool-preview-card__name">{t.name}</div>
+                  <div className="tool-preview-card__sub">{t.sub}</div>
+                </div>
+              ))}
+            </div>
+
             <div className="tool-tab-bar" role="tablist">
               {TOOLS.map((t) => (
                 <button
                   key={t.id}
+                  id={`tool-tab-${t.id}`}
                   className={`tool-tab${activeTool === t.id ? ' tool-tab--active' : ''}`}
                   onClick={() => setActiveTool(t.id)}
                   role="tab"
@@ -74,6 +75,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
               <div
                 id="tool-panel-qr"
                 role="tabpanel"
+                aria-labelledby="tool-tab-qr"
                 hidden={activeTool !== 'qr'}
               >
                 {activeTool === 'qr' && <QRGenerator />}
@@ -81,6 +83,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
               <div
                 id="tool-panel-api"
                 role="tabpanel"
+                aria-labelledby="tool-tab-api"
                 hidden={activeTool !== 'api'}
               >
                 {activeTool === 'api' && <APITester />}
@@ -88,6 +91,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
               <div
                 id="tool-panel-file"
                 role="tabpanel"
+                aria-labelledby="tool-tab-file"
                 hidden={activeTool !== 'file'}
               >
                 {activeTool === 'file' && <FileProcessor />}
