@@ -1,47 +1,4 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
-  color: var(--dark-text-primary);
-  background: var(--dark-bg-primary);
-  overflow-x: hidden;
-}
-
 #root {
+  width: 100%;
   min-height: 100vh;
-}
-
-/* Futuristic selection */
-::selection {
-  background: var(--dark-accent-cyan);
-  color: var(--dark-bg-primary);
-}
-
-/* Minimal scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--dark-bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--dark-accent-cyan);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-accent-blue);
 }
