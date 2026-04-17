@@ -133,6 +133,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
   }, [selectedProject])
 
   return (
+    <>
     <SectionWrapper id="projects" className="projects" sectionRef={sectionRef}>
       <div className="projects__header">
         <div className="projects__section-label">// Work</div>
@@ -229,6 +230,11 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
               </div>
               {project.imageUrl && (
                 <div className="featured-card__image">
+                  <div className="featured-card__image-bar" aria-hidden="true">
+                    <span className="featured-card__image-dot" />
+                    <span className="featured-card__image-dot" />
+                    <span className="featured-card__image-dot" />
+                  </div>
                   <img src={project.imageUrl} alt="" aria-hidden="true" loading="lazy" />
                 </div>
               )}
@@ -249,29 +255,31 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
         </AnimatePresence>
       </motion.div>
 
-      <AnimatePresence>
-        {selectedProject && (
-          <>
-            <motion.div
-              className="modal-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={closeModal}
-              aria-hidden="true"
-            />
-            <motion.div
-              ref={modalRef}
-              className="project-modal"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="modal-title"
-              tabIndex={-1}
-              initial={{ opacity: 0, scale: 0.95, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 12 }}
-              transition={{ duration: 0.25 }}
-            >
+    </SectionWrapper>
+
+    <AnimatePresence>
+      {selectedProject && (
+        <>
+          <motion.div
+            className="modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+            aria-hidden="true"
+          />
+          <motion.div
+            ref={modalRef}
+            className="project-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            tabIndex={-1}
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ duration: 0.25 }}
+          >
               <button
                 className="modal-close"
                 onClick={closeModal}
@@ -385,11 +393,11 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                   </a>
                 )}
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </SectionWrapper>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+    </>
   )
 }
 

@@ -128,22 +128,36 @@
 }
 
 .featured-card__image {
-  width: 140px;
-  height: 100px;
+  width: 180px;
+  flex-shrink: 0;
   border-radius: var(--radius-md);
   overflow: hidden;
   border: 1px solid var(--border-subtle);
-  flex-shrink: 0;
-  background: var(--bg-surface);
+  background: #1a1a2e;
+}
+
+.featured-card__image-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
+  padding: 5px 8px;
+  background: #12121e;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.featured-card__image-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-subtle);
 }
 
 .featured-card__image img {
   width: 100%;
-  height: 100%;
+  display: block;
   object-fit: cover;
+  object-position: top;
+  max-height: 120px;
 }
 
 /* Tech tags */
