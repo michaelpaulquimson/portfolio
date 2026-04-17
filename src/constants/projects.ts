@@ -20,6 +20,8 @@ export const PROJECTS: Project[] = [
     category: "web",
     year: "2025",
     featured: false,
+    imageUrl: "/portfolio/images/mylestan/preview.jpg",
+    imageGallery: ["/portfolio/images/mylestan/preview.jpg"],
     liveUrl: "https://mylesyeotan.com",
     githubUrl: "https://github.com/startupenablr-dev/mylestan-website-v2"
   },
