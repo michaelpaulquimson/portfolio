@@ -1,29 +1,43 @@
-import React from 'react'
-import Header from './Header.tsx'
-import Resume from './Resume.tsx'
-import Projects from './Projects.tsx'
-import QRGenerator from './QRGenerator.tsx'
-import APITester from './APITester.tsx'
-import FileProcessor from './FileProcessor.tsx'
-import StickyNavigation from './StickyNavigation.tsx'
-import ScrollToTop from './ScrollToTop.tsx'
-import { useTheme } from '../contexts/ThemeContext'
+import React, { useRef } from 'react'
+import Header from './Header'
+import Resume from './Resume'
+import Projects from './Projects'
+import ToolsSection from './ToolsSection'
+import DotNavigation from './DotNavigation'
+import DarkModeToggle from './DarkModeToggle'
+import ScrollToTop from './ScrollToTop'
+import { useScrollSection } from '../hooks/useScrollSection'
+import type { SectionRefs } from '../hooks/useScrollSection'
 import './Portfolio.css'
 
 const Portfolio: React.FC = () => {
-  const { isDarkMode } = useTheme()
+  const heroRef = useRef<HTMLElement>(null)
+  const resumeRef = useRef<HTMLElement>(null)
+  const projectsRef = useRef<HTMLElement>(null)
+  const toolsRef = useRef<HTMLElement>(null)
+
+  const sectionRefs: SectionRefs = {
+    hero: heroRef,
+    resume: resumeRef,
+    projects: projectsRef,
+    tools: toolsRef,
+  }
+
+  const activeSection = useScrollSection(sectionRefs)
 
   return (
-    <div className={`portfolio ${isDarkMode ? 'dark' : 'light'}`}>
-      <StickyNavigation />
-      <Header />
-      <main className="main-content">
-        <Resume />
-        <Projects />
-        <QRGenerator />
-        <APITester />
-        <FileProcessor />
+    <div className="portfolio">
+      <DotNavigation activeSection={activeSection} />
+      <DarkModeToggle />
+
+      <Header sectionRef={heroRef} />
+
+      <main className="portfolio__main">
+        <Resume sectionRef={resumeRef} />
+        <Projects sectionRef={projectsRef} />
+        <ToolsSection sectionRef={toolsRef} />
       </main>
+
       <ScrollToTop />
     </div>
   )

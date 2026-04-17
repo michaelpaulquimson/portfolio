@@ -1,75 +1,39 @@
 .portfolio {
+  width: 100%;
   min-height: 100vh;
-  transition: background 0.3s ease;
-  position: relative;
-  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
 }
 
-.portfolio.dark {
-  background: var(--dark-bg-primary);
-  color: var(--dark-text-primary);
+.portfolio__main {
+  width: 100%;
 }
 
-.portfolio.light {
-  background: var(--light-bg-primary);
-  color: var(--light-text-primary);
+/* Section max-width centering */
+.resume,
+.projects,
+.tools-section {
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: max(var(--spacing-xl), (100vw - var(--max-width)) / 2);
+  padding-right: max(var(--spacing-xl), (100vw - var(--max-width)) / 2);
 }
 
-.main-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0;
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Selection colors */
-::selection {
-  background: var(--dark-accent-cyan);
-  color: var(--dark-bg-primary);
-}
-
-.portfolio.light ::selection {
-  background: var(--light-accent-blue);
-  color: var(--light-bg-primary);
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-.portfolio.dark ::-webkit-scrollbar-track {
-  background: var(--dark-bg-secondary);
-}
-
-.portfolio.dark ::-webkit-scrollbar-thumb {
-  background: var(--dark-accent-cyan);
-  border-radius: 2px;
-}
-
-.portfolio.dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-accent-blue);
-}
-
-.portfolio.light ::-webkit-scrollbar-track {
-  background: var(--light-bg-secondary);
-}
-
-.portfolio.light ::-webkit-scrollbar-thumb {
-  background: var(--light-accent-blue);
-  border-radius: 2px;
-}
-
-.portfolio.light ::-webkit-scrollbar-thumb:hover {
-  background: var(--light-accent-cyan);
+@media (max-width: 1140px) {
+  .resume,
+  .projects,
+  .tools-section {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+  }
 }
 
 @media (max-width: 768px) {
-  .main-content {
-    padding: 0;
+  .resume,
+  .projects,
+  .tools-section {
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
   }
 }
