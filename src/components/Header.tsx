@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
 import gsap from 'gsap'
 import GlowOrb from './GlowOrb'
 import './Header.css'
@@ -64,14 +64,18 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
     return () => ctx.revert()
   }, [])
 
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  }
+  const scrollToProjects = useCallback(() => {
+    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
+  }, [])
+
+  const scrollToResume = useCallback(() => {
+    document.getElementById('resume')?.scrollIntoView({ behavior: 'smooth' })
+  }, [])
 
   return (
     <header
       id="hero"
-      ref={sectionRef as React.RefObject<HTMLElement>}
+      ref={sectionRef as React.RefObject<HTMLElement | null>}
       className="hero"
     >
       <div className="hero__grid-bg" aria-hidden="true" />
@@ -92,14 +96,16 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
         </p>
         <div ref={linksRef} className="hero__links">
           <button
+            type="button"
             className="hero__cta hero__cta--primary"
-            onClick={() => scrollTo('projects')}
+            onClick={scrollToProjects}
           >
             View Work
           </button>
           <button
+            type="button"
             className="hero__cta hero__cta--ghost"
-            onClick={() => scrollTo('resume')}
+            onClick={scrollToResume}
           >
             Resume
           </button>

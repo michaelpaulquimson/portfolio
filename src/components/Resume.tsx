@@ -84,13 +84,15 @@ const calculateTotalYears = (): string => {
   return `${Math.floor(totalMonths / 12)}+`
 }
 
+const TOTAL_YEARS = calculateTotalYears()
+
 const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
   return (
     <SectionWrapper id="resume" className="resume" sectionRef={sectionRef}>
       <div className="resume__header">
         <div className="resume__section-label">// Experience</div>
         <h2 className="resume__title">
-          {calculateTotalYears()} Years Building
+          {TOTAL_YEARS} Years Building
           <br />
           Software That Matters
         </h2>
@@ -106,7 +108,7 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
           <div className="timeline__col-title">Work History</div>
           <div className="timeline">
             {EXPERIENCE.map((exp, i) => (
-              <div key={i} className="timeline__item">
+              <div key={exp.company + exp.period} className="timeline__item">
                 <div className="timeline__spine">
                   <div
                     className={`timeline__dot${exp.isCurrent ? '' : ' timeline__dot--past'}`}
@@ -118,8 +120,8 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
                   <div className="timeline__role">{exp.title}</div>
                   <div className="timeline__period">{exp.period}</div>
                   <ul className="timeline__bullets">
-                    {exp.bullets.map((b, j) => (
-                      <li key={j}>{b}</li>
+                    {exp.bullets.map((b) => (
+                      <li key={b}>{b}</li>
                     ))}
                   </ul>
                 </div>

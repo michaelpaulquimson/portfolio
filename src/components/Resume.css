@@ -98,7 +98,7 @@
   border-radius: 50%;
   border: 1.5px solid var(--accent-primary);
   background: var(--bg-base);
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+  box-shadow: 0 0 8px var(--accent-glow);
   flex-shrink: 0;
   margin-top: 3px;
   position: relative;
@@ -201,7 +201,7 @@
 .skill-chip--primary {
   border-color: var(--border-accent);
   color: var(--accent-primary);
-  background: rgba(0, 255, 255, 0.05);
+  background: var(--bg-glass);
 }
 
 /* Education + Certifications row */
