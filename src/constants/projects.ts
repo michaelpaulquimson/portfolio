@@ -31,9 +31,9 @@ export const PROJECTS: Project[] = [
       "/portfolio/images/favor-app/favor-app-6.webp"
     ],
     liveUrl: "https://favor.church/mnl",
-    githubUrl: "https://play.google.com/store/apps/details?id=church.favor.app",
     extraLinks: {
-      appStore: "https://apps.apple.com/ph/app/favor-app-favor-church-events/id6477150469"
+      appStore: "https://apps.apple.com/ph/app/favor-app-favor-church-events/id6477150469",
+      playStore: "https://play.google.com/store/apps/details?id=church.favor.app"
     }
   }
 ]

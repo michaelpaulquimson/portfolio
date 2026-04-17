@@ -68,10 +68,10 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
 
   const featuredProjects = PROJECTS.filter((p) => p.featured)
 
-  const openModal = (project: Project) => {
+  const openModal = useCallback((project: Project) => {
     setSelectedProject(project)
     setCurrentImageIndex(0)
-  }
+  }, [])
 
   const closeModal = useCallback(() => {
     setSelectedProject(null)
@@ -118,17 +118,17 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
     }
   }, [selectedProject, closeModal])
 
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     if (!selectedProject?.imageGallery) return
-    setCurrentImageIndex((i) => (i + 1) % selectedProject.imageGallery!.length)
-  }
+    const len = selectedProject.imageGallery.length
+    setCurrentImageIndex((i) => (i + 1) % len)
+  }, [selectedProject])
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     if (!selectedProject?.imageGallery) return
-    setCurrentImageIndex(
-      (i) => (i - 1 + selectedProject.imageGallery!.length) % selectedProject.imageGallery!.length
-    )
-  }
+    const len = selectedProject.imageGallery.length
+    setCurrentImageIndex((i) => (i - 1 + len) % len)
+  }, [selectedProject])
 
   return (
     <SectionWrapper id="projects" className="projects" sectionRef={sectionRef}>
@@ -153,19 +153,11 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
       {selectedCategory === 'all' && featuredProjects.length > 0 && (
         <div className="projects__featured">
           {featuredProjects.map((project) => (
-            <div
+            <button
               key={project.id}
               className="featured-card"
               onClick={() => openModal(project)}
-              role="button"
-              tabIndex={0}
               aria-label={`Open ${project.title} details`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  openModal(project)
-                }
-              }}
             >
               <div>
                 <div className="featured-card__badge">★ Featured</div>
@@ -192,7 +184,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                       Website
                     </a>
                   )}
-                  {project.githubUrl && !project.githubUrl.includes('play.google.com') && (
+                  {project.githubUrl && (
                     <a
                       href={project.githubUrl}
                       target="_blank"
@@ -205,9 +197,9 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                       Code
                     </a>
                   )}
-                  {project.githubUrl?.includes('play.google.com') && (
+                  {project.extraLinks?.playStore && (
                     <a
-                      href={project.githubUrl}
+                      href={project.extraLinks.playStore}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="project-link"
@@ -238,7 +230,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                   <img src={project.imageUrl} alt="" aria-hidden="true" loading="lazy" />
                 </div>
               )}
-            </div>
+            </button>
           ))}
         </div>
       )}
@@ -314,9 +306,9 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                         ›
                       </button>
                       <div className="gallery-indicators" role="tablist">
-                        {selectedProject.imageGallery.map((_, i) => (
+                        {selectedProject.imageGallery.map((url, i) => (
                           <button
-                            key={i}
+                            key={url}
                             className={`gallery-indicator${i === currentImageIndex ? ' gallery-indicator--active' : ''}`}
                             onClick={() => setCurrentImageIndex(i)}
                             role="tab"
@@ -354,7 +346,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                     Visit Website
                   </a>
                 )}
-                {selectedProject.githubUrl && !selectedProject.githubUrl.includes('play.google.com') && (
+                {selectedProject.githubUrl && (
                   <a
                     href={selectedProject.githubUrl}
                     target="_blank"
@@ -366,9 +358,9 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                     View Code
                   </a>
                 )}
-                {selectedProject.githubUrl?.includes('play.google.com') && (
+                {selectedProject.extraLinks?.playStore && (
                   <a
-                    href={selectedProject.githubUrl}
+                    href={selectedProject.extraLinks.playStore}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="modal-link"

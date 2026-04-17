@@ -46,7 +46,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="tools-section__preview">
+            <div className="tools-section__preview" aria-hidden="true">
               {TOOLS.map((t) => (
                 <div key={t.id} className="tool-preview-card">
                   <div className="tool-preview-card__icon">{t.icon}</div>
@@ -78,7 +78,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
                 aria-labelledby="tool-tab-qr"
                 hidden={activeTool !== 'qr'}
               >
-                {activeTool === 'qr' && <QRGenerator />}
+                <QRGenerator />
               </div>
               <div
                 id="tool-panel-api"
@@ -86,7 +86,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
                 aria-labelledby="tool-tab-api"
                 hidden={activeTool !== 'api'}
               >
-                {activeTool === 'api' && <APITester />}
+                <APITester />
               </div>
               <div
                 id="tool-panel-file"
@@ -94,7 +94,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
                 aria-labelledby="tool-tab-file"
                 hidden={activeTool !== 'file'}
               >
-                {activeTool === 'file' && <FileProcessor />}
+                <FileProcessor />
               </div>
             </div>
           </motion.div>
