@@ -15,19 +15,22 @@ const DotNavigation: React.FC<DotNavigationProps> = ({ activeSection }) => {
   return (
     <nav className="dot-nav" aria-label="Page sections">
       {sections.map((id) => (
-        <div key={id} className="dot-nav__item">
+        <button
+          key={id}
+          className="dot-nav__item"
+          onClick={() => handleClick(id)}
+          aria-label={`Go to ${sectionLabels[id]} section`}
+          aria-current={activeSection === id ? 'true' : undefined}
+        >
           <span
             className={`dot-nav__label${activeSection === id ? ' dot-nav__label--active' : ''}`}
           >
             {sectionLabels[id]}
           </span>
-          <button
+          <span
             className={`dot-nav__dot${activeSection === id ? ' dot-nav__dot--active' : ''}`}
-            onClick={() => handleClick(id)}
-            aria-label={`Go to ${sectionLabels[id]} section`}
-            aria-current={activeSection === id ? 'true' : undefined}
           />
-        </div>
+        </button>
       ))}
     </nav>
   )
