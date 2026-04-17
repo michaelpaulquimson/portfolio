@@ -42,7 +42,7 @@ export const PROJECTS: Project[] = [
  * Category filter configuration
  */
 export const CATEGORY_FILTERS: CategoryFilter[] = [
-  { id: 'all', label: 'All Projects', icon: Layers },
+  { id: 'all', label: 'All', icon: Layers },
   { id: 'fullstack', label: 'Full Stack', icon: Layers },
   { id: 'mobile', label: 'Mobile', icon: Layers },
   { id: 'web', label: 'Web', icon: Layers },

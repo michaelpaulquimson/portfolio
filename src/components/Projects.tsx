@@ -63,7 +63,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
 
   const filteredProjects =
     selectedCategory === 'all'
-      ? PROJECTS
+      ? PROJECTS.filter((p) => !p.featured)  // exclude featured when showing the featured card
       : PROJECTS.filter((p) => p.category === selectedCategory)
 
   const featuredProjects = PROJECTS.filter((p) => p.featured)
@@ -82,7 +82,30 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
     if (!selectedProject) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal()
+      if (e.key === 'Escape') {
+        closeModal()
+        return
+      }
+      if (e.key === 'Tab') {
+        const modal = modalRef.current
+        if (!modal) return
+        const focusable = modal.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault()
+            last?.focus()
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault()
+            first?.focus()
+          }
+        }
+      }
     }
 
     document.addEventListener('keydown', handleKeyDown)
