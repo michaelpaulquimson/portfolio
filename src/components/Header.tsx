@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import gsap from 'gsap'
 import GlowOrb from './GlowOrb'
+import ContactDialog from './ContactDialog'
 import './Header.css'
 
 interface HeaderProps {
@@ -8,6 +9,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
+  const [contactOpen, setContactOpen] = useState(false)
   const orbRef = useRef<HTMLDivElement>(null)
   const eyebrowRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLHeadingElement>(null)
@@ -73,6 +75,7 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
   }, [])
 
   return (
+    <>
     <header
       id="hero"
       ref={sectionRef as React.RefObject<HTMLElement | null>}
@@ -94,6 +97,9 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
         <p ref={roleRef} className="hero__role">
           Senior Solutions Architect &amp; Full Stack Developer
         </p>
+        <a href="mailto:michaelpaulquimson@gmail.com" className="hero__email">
+          michaelpaulquimson@gmail.com
+        </a>
         <div ref={linksRef} className="hero__links">
           <button
             type="button"
@@ -109,12 +115,13 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
           >
             Resume
           </button>
-          <a
-            href="mailto:michaelpaulquimson@gmail.com"
+          <button
+            type="button"
             className="hero__cta hero__cta--ghost"
+            onClick={() => setContactOpen(true)}
           >
             Contact
-          </a>
+          </button>
         </div>
       </div>
 
@@ -123,6 +130,9 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
         <span>Scroll</span>
       </div>
     </header>
+
+    <ContactDialog isOpen={contactOpen} onClose={() => setContactOpen(false)} />
+    </>
   )
 }
 

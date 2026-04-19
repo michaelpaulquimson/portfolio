@@ -12,27 +12,82 @@ import type { Project, CategoryFilter } from '../types/Project'
  */
 export const PROJECTS: Project[] = [
   {
-    id: 3,
-    title: "Myles Yeo Tan — Portfolio",
-    description: "Production portfolio for a crypto trader, certified financial planner, and public speaker with SSR and transactional email.",
-    longDescription: "Production portfolio website for a crypto trader, certified financial planner, and public speaker. Built with Next.js 16 and TypeScript, featuring server-side rendering on all pages with JSON-LD structured data (Person, WebSite, ProfessionalService schemas). REST API routes handle contact and newsletter with server-side validation. Full security header suite — CSP, HSTS, X-Frame-Options, Permissions-Policy. 30 Jest tests covering API validation, UI components, and error handling. SEO-optimized with sitemap, robots.txt, Open Graph, Twitter Cards, and AI-crawler-friendly llms.txt.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Radix UI", "Resend", "Google Analytics", "Vercel"],
-    category: "web",
+    id: 1,
+    title: "Moonwatcher",
+    description: "Discord trading signal bot for Crypto, PSE, and US stocks — actively used by a crypto community.",
+    longDescription: [
+      "Delivers real-time trading signals for Crypto, PSE, and US stock markets via Discord.",
+      "AI bots using ML and LLM models analyze market conditions and generate trade decisions.",
+      "Trade execution integrated via the OKX API.",
+      "Actively maintained and used by a known crypto community as a reliable signal feed.",
+    ],
+    tags: ["Python", "Discord API", "ML/LLM", "OKX API", "Trading"],
+    category: "tool",
     year: "2025",
     featured: false,
-    imageUrl: "/portfolio/images/mylestan/preview.jpg",
-    imageGallery: ["/portfolio/images/mylestan/preview.jpg"],
+    imageUrl: "/portfolio/images/moonwatcher/moonwatcher-1.png",
+    imageGallery: [
+      "/portfolio/images/moonwatcher/moonwatcher-1.png",
+      "/portfolio/images/moonwatcher/moonwatcher-2.png",
+      "/portfolio/images/moonwatcher/moonwatcher-3.png",
+    ],
+  },
+  {
+    id: 3,
+    title: "Myles Yeo Tan — Portfolio",
+    description: "Production portfolio for a crypto trader, certified financial planner, and public speaker.",
+    longDescription: [
+      "Next.js 16 + TypeScript with server-side rendering throughout.",
+      "REST API routes for contact and newsletter with server-side validation.",
+      "30 Jest tests across API routes, UI components, and error handling.",
+      "Cloudflare for CDN, bot protection, and WAF rate-limiting on API endpoints.",
+      "AI-discoverable via llms.txt — optimized for ChatGPT, Perplexity, and other LLM crawlers.",
+    ],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Radix UI", "Resend", "Cloudflare", "Vercel"],
+    category: "web",
+    year: "2026",
+    featured: false,
+    imageUrl: "/portfolio/images/mylestan/preview.png",
+    imageGallery: ["/portfolio/images/mylestan/preview.png"],
     liveUrl: "https://mylesyeotan.com",
     githubUrl: "https://github.com/startupenablr-dev/mylestan-website-v2"
+  },
+  {
+    id: 4,
+    title: "Bear Bull Hunter",
+    description: "AI-powered crypto trading platform with multi-bot management and autonomous OKX trade execution.",
+    longDescription: [
+      "Multi-bot system trading concurrent crypto pairs on OKX perpetual swaps.",
+      "LLM signal generation (Grok/OpenAI/DeepSeek) with Kelly Criterion dynamic leverage sizing.",
+      "LightGBM ML classifier predicts trade win probability to guide directional bias.",
+      "Circuit breaker guardrails: MDD limits, consecutive loss detection, automatic bot disabling.",
+      "FastAPI + async MongoDB backend, Next.js dashboard, Docker/AWS ECS deployment.",
+    ],
+    tags: ["Python", "FastAPI", "Next.js", "ML/LLM", "LightGBM", "OKX API", "MongoDB"],
+    category: "tool",
+    year: "2025",
+    featured: false,
+    imageUrl: "/portfolio/images/bearbullhunter/preview.png",
+    imageGallery: [
+      "/portfolio/images/bearbullhunter/preview.png",
+      "/portfolio/images/bearbullhunter/preview-2.png",
+      "/portfolio/images/bearbullhunter/preview-3.png",
+    ],
   },
   {
     id: 2,
     title: "Favor App",
     description: "Church event management with QR code check-in and registration",
-    longDescription: "A cross-platform mobile application for Favor Church built with Flutter and Dart for iOS and Android. Features include event check-in, event registration, and QR scanner for admins. The app streamlines church event management with a Node.js backend for real-time updates and cloud storage.",
-    tags: ["Flutter", "Dart", "Node.js", "QR Code", "Mobile"],
+    longDescription: [
+      "Flutter + Dart — single codebase running natively on iOS and Android.",
+      "Custom Node.js + Express + TypeScript REST API with MongoDB and Mongoose.",
+      "QR code generation and scanning for event check-in and admin workflows.",
+      "Zod validation, Express rate limiting, and Swagger API documentation.",
+      "Published on both the Apple App Store and Google Play Store.",
+    ],
+    tags: ["Flutter", "Dart", "Node.js", "TypeScript", "MongoDB", "Express"],
     category: "mobile",
-    year: "2024",
+    year: "2023",
     featured: true,
     imageUrl: "/portfolio/images/favor-app/favor-app-1.webp",
     imageGallery: [
@@ -56,8 +111,7 @@ export const PROJECTS: Project[] = [
  */
 export const CATEGORY_FILTERS: CategoryFilter[] = [
   { id: 'all', label: 'All' },
-  { id: 'fullstack', label: 'Full Stack' },
   { id: 'mobile', label: 'Mobile' },
   { id: 'web', label: 'Web' },
-  { id: 'tool', label: 'Tools' }
+  { id: 'tool', label: 'Tools' },
 ]

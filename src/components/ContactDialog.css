@@ -1,0 +1,195 @@
+.contact-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+}
+
+.contact-dialog__container {
+  position: fixed;
+  inset: 0;
+  z-index: 201;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.contact-dialog {
+  position: relative;
+  width: min(520px, calc(100vw - 2rem));
+  background: var(--bg-base);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+}
+
+.contact-dialog__close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.contact-dialog__close:hover {
+  border-color: var(--border-accent);
+  color: var(--accent-primary);
+}
+
+.contact-dialog__label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.contact-dialog__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--spacing-xl);
+  padding-right: 2.5rem;
+}
+
+.contact-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.contact-dialog__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.contact-dialog__field-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.contact-dialog__input,
+.contact-dialog__textarea {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.875rem;
+  width: 100%;
+  transition: border-color var(--transition-fast);
+  outline: none;
+}
+
+.contact-dialog__input::placeholder,
+.contact-dialog__textarea::placeholder {
+  color: var(--text-dim);
+}
+
+.contact-dialog__input:focus,
+.contact-dialog__textarea:focus {
+  border-color: var(--accent-primary);
+}
+
+.contact-dialog__input--error,
+.contact-dialog__textarea--error {
+  border-color: #ff4d6a;
+}
+
+.contact-dialog__textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.7;
+}
+
+.contact-dialog__error {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  color: #ff4d6a;
+  letter-spacing: 0.05em;
+}
+
+.contact-dialog__submit {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent-primary);
+  color: var(--bg-base);
+  background: var(--accent-primary);
+  cursor: pointer;
+  align-self: flex-end;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.contact-dialog__submit:hover:not(:disabled) {
+  box-shadow: 0 0 16px rgba(0, 255, 255, 0.3);
+}
+
+.contact-dialog__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.contact-dialog__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl) 0;
+  text-align: center;
+}
+
+.contact-dialog__success-icon {
+  font-size: 2rem;
+  color: var(--accent-primary);
+}
+
+.contact-dialog__success-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.contact-dialog__success-body {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.contact-dialog__send-error {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: #ff4d6a;
+  text-align: center;
+  padding: var(--spacing-sm) 0;
+}

@@ -34,21 +34,58 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick }) => (
     }}
     aria-label={`Open ${project.title} details`}
   >
-    <div className="project-card__meta">
-      <span>{project.year}</span>
-      <span>·</span>
-      <span>{project.category}</span>
-    </div>
-    <div className="project-card__title">{project.title}</div>
-    <p className="project-card__desc">{project.description}</p>
-    <div className="project-tags">
-      {project.tags.slice(0, 3).map((tag) => (
-        <span key={tag} className="project-tag">
-          {tag}
-        </span>
-      ))}
-      {project.tags.length > 3 && (
-        <span className="project-tag">+{project.tags.length - 3}</span>
+    {project.imageUrl && (
+      <div className="project-card__thumbnail">
+        <img src={project.imageUrl} alt="" aria-hidden="true" loading="lazy" />
+      </div>
+    )}
+    <div className="project-card__body">
+      <div className="project-card__meta">
+        <span>{project.year}</span>
+        <span>·</span>
+        <span>{project.category}</span>
+      </div>
+      <div className="project-card__title">{project.title}</div>
+      <p className="project-card__desc">{project.description}</p>
+      <div className="project-tags">
+        {project.tags.slice(0, 3).map((tag) => (
+          <span key={tag} className="project-tag">
+            {tag}
+          </span>
+        ))}
+        {project.tags.length > 3 && (
+          <span className="project-tag">+{project.tags.length - 3}</span>
+        )}
+      </div>
+      {(project.liveUrl || project.githubUrl) && (
+        <div className="project-links">
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-link"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Visit ${project.title} website (opens in new window)`}
+            >
+              <ExternalLink size={11} />
+              Website
+            </a>
+          )}
+          {project.githubUrl && (
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-link"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`View ${project.title} source code on GitHub (opens in new window)`}
+            >
+              <Github size={11} />
+              Code
+            </a>
+          )}
+        </div>
       )}
     </div>
   </motion.article>
@@ -268,6 +305,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
             onClick={closeModal}
             aria-hidden="true"
           />
+          <div className="modal-container" onClick={closeModal}>
           <motion.div
             ref={modalRef}
             className="project-modal"
@@ -279,6 +317,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
             transition={{ duration: 0.25 }}
+            onClick={(e) => e.stopPropagation()}
           >
               <button
                 className="modal-close"
@@ -293,28 +332,17 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
               </h3>
 
               {selectedProject.imageGallery && selectedProject.imageGallery.length > 0 && (
-                <div className="modal-image-container">
-                  <img
-                    src={selectedProject.imageGallery[currentImageIndex]}
-                    alt={`${selectedProject.title} screenshot ${currentImageIndex + 1} of ${selectedProject.imageGallery.length}`}
-                    className="modal-image"
-                  />
+                <>
+                  <div className={`modal-image-container modal-image-container--${selectedProject.category}`}>
+                    <img
+                      src={selectedProject.imageGallery[currentImageIndex]}
+                      alt={`${selectedProject.title} screenshot ${currentImageIndex + 1} of ${selectedProject.imageGallery.length}`}
+                      className="modal-image"
+                    />
+                  </div>
                   {selectedProject.imageGallery.length > 1 && (
-                    <>
-                      <button
-                        className="gallery-nav gallery-nav--prev"
-                        onClick={prevImage}
-                        aria-label="Previous image"
-                      >
-                        ‹
-                      </button>
-                      <button
-                        className="gallery-nav gallery-nav--next"
-                        onClick={nextImage}
-                        aria-label="Next image"
-                      >
-                        ›
-                      </button>
+                    <div className="gallery-controls">
+                      <button className="gallery-nav" onClick={prevImage} aria-label="Previous image">‹</button>
                       <div className="gallery-indicators" role="tablist">
                         {selectedProject.imageGallery.map((url, i) => (
                           <button
@@ -327,12 +355,24 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                           />
                         ))}
                       </div>
-                    </>
+                      <button className="gallery-nav" onClick={nextImage} aria-label="Next image">›</button>
+                    </div>
                   )}
-                </div>
+                </>
               )}
 
-              <p className="modal-description">{selectedProject.longDescription}</p>
+              {Array.isArray(selectedProject.longDescription) ? (
+                <>
+                  <p className="modal-description">{selectedProject.description}</p>
+                  <ul className="modal-description modal-description--list">
+                    {selectedProject.longDescription.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <p className="modal-description">{selectedProject.longDescription}</p>
+              )}
 
               <div className="modal-tags-title">Technologies</div>
               <div className="project-tags">
@@ -394,6 +434,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                 )}
               </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

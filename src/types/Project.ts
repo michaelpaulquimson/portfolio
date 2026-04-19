@@ -8,7 +8,7 @@ export interface Project {
   id: number
   title: string
   description: string
-  longDescription: string
+  longDescription: string | string[]
   tags: string[]
   category: ProjectCategory
   imageUrl?: string

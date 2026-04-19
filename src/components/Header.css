@@ -71,6 +71,20 @@
   margin: 0;
 }
 
+.hero__email {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-primary);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.hero__email:hover {
+  opacity: 1;
+}
+
 .hero__links {
   display: flex;
   gap: 0.75rem;

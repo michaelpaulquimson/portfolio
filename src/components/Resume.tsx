@@ -18,12 +18,12 @@ const EXPERIENCE: ExperienceItem[] = [
   {
     title: 'Senior Solutions Architect',
     company: 'Eclaro Business Solutions',
-    period: 'FEB 2025 – Present',
+    period: 'FEB 2025 – MAR 2026',
     isCurrent: true,
     bullets: [
-      'Provide technical guidance on system development and integration',
-      'Review code for alignment with architecture standards',
-      'Support resolution of complex production issues',
+      'Guided development teams on architecture and integration decisions, aligning technical direction with business goals.',
+      'Conducted code reviews focused on constructive feedback — raising the bar for quality while keeping the team moving.',
+      'Collaborated with engineers and stakeholders to triage and resolve production issues.',
     ],
   },
   {
@@ -32,9 +32,9 @@ const EXPERIENCE: ExperienceItem[] = [
     period: 'JUN 2021 – FEB 2025 · 3 yrs 11 mos',
     isCurrent: false,
     bullets: [
-      'Developed features, fixed bugs, and provided production support',
-      'Maintained clear developer documentation for future reference',
-      'Improved performance through debugging and refactoring',
+      'Built and shipped features end-to-end, from requirements gathering to production deployment.',
+      'Introduced AI tooling into the team\'s workflow, accelerating delivery without cutting corners on quality.',
+      'Wrote and maintained developer documentation to reduce knowledge silos and speed up onboarding.',
     ],
   },
   {
@@ -43,9 +43,8 @@ const EXPERIENCE: ExperienceItem[] = [
     period: 'FEB 2020 – JUN 2021 · 1 yr 4 mos',
     isCurrent: false,
     bullets: [
-      'Integrated third-party APIs to enhance application functionality',
-      'Assessed design feasibility based on requirements',
-      'Collaborated with the team to resolve development challenges',
+      'Integrated third-party APIs to expand platform capabilities and improve user experience.',
+      'Worked with business analysts and designers to assess feasibility and translate requirements into working software.',
     ],
   },
   {
@@ -54,8 +53,8 @@ const EXPERIENCE: ExperienceItem[] = [
     period: 'JUN 2019 – FEB 2020 · 8 mos',
     isCurrent: false,
     bullets: [
-      'Identified and fixed defects to resolve user-reported issues',
-      'Participated in code reviews and pair programming',
+      'Resolved user-reported issues by digging into root cause, not just the symptom.',
+      'Participated in code reviews and pair programming — learning as much as contributing.',
     ],
   },
   {
@@ -64,16 +63,18 @@ const EXPERIENCE: ExperienceItem[] = [
     period: 'JUL 2017 – MAY 2019 · 1 yr 11 mos',
     isCurrent: false,
     bullets: [
-      'Designed database schemas and built mobile-friendly web app',
-      'Developed and integrated RESTful APIs',
+      'Designed database schemas and built RESTful APIs for a live travel services platform.',
+      'Developed a mobile-friendly web app that improved how customers discovered and booked services.',
     ],
   },
 ]
 
-const PRIMARY_SKILLS = ['React', 'TypeScript', 'Node.js', 'Swift', 'Flutter', 'Python']
+const PRIMARY_SKILLS = ['React', 'Angular', 'TypeScript', 'Node.js', 'Flutter', 'Python']
 const OTHER_SKILLS = [
-  'React Native', 'PostgreSQL', 'AWS', 'Firebase', 'Docker',
-  'GraphQL', 'REST APIs', 'Dart', 'Git', 'Vite',
+  'AWS', 'Docker', 'MongoDB', 'REST APIs', 'Dart', 'Git', 'CI/CD', 'OpenShift',
+]
+const AI_SKILLS = [
+  'OpenAI Codex', 'LLM Integration', 'Claude Code', 'AI-Assisted Development',
 ]
 
 const calculateTotalYears = (): string => {
@@ -97,9 +98,7 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
           Software That Matters
         </h2>
         <p className="resume__summary">
-          Passionate full-stack engineer spanning frontend, backend, and mobile. Skilled in
-          JavaScript, TypeScript, and Python across cloud platforms. Co-built a Flutter app
-          serving a non-profit community.
+          Full-stack developer and solutions architect with 8+ years shipping production-ready systems across diverse industries. Known for picking up new technologies fast and applying them to real problems. Treats AI not as a shortcut but as a genuine force multiplier — compressing delivery timelines while keeping quality at the center.
         </p>
       </div>
 
@@ -140,6 +139,14 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
             ))}
             {OTHER_SKILLS.map((s) => (
               <span key={s} className="skill-chip">
+                {s}
+              </span>
+            ))}
+          </div>
+          <div className="skills__col-title skills__col-title--ai">AI & Tooling</div>
+          <div className="skills__grid">
+            {AI_SKILLS.map((s) => (
+              <span key={s} className="skill-chip skill-chip--ai">
                 {s}
               </span>
             ))}

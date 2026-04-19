@@ -192,9 +192,9 @@
   font-size: 0.625rem;
   padding: 3px 10px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  background: var(--bg-surface);
+  border: 1px solid var(--border-accent);
+  color: var(--accent-primary);
+  background: var(--bg-glass);
   transition: border-color var(--transition-fast), color var(--transition-fast);
 }
 
@@ -202,6 +202,16 @@
   border-color: var(--border-accent);
   color: var(--accent-primary);
   background: var(--bg-glass);
+}
+
+.skill-chip--ai {
+  border-color: var(--border-accent);
+  color: var(--accent-primary);
+  background: var(--bg-glass);
+}
+
+.skills__col-title--ai {
+  margin-top: var(--spacing-md);
 }
 
 /* Education + Certifications row */

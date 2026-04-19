@@ -46,16 +46,6 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
           >
-            <div className="tools-section__preview" aria-hidden="true">
-              {TOOLS.map((t) => (
-                <div key={t.id} className="tool-preview-card">
-                  <div className="tool-preview-card__icon">{t.icon}</div>
-                  <div className="tool-preview-card__name">{t.name}</div>
-                  <div className="tool-preview-card__sub">{t.sub}</div>
-                </div>
-              ))}
-            </div>
-
             <div className="tool-tab-bar" role="tablist">
               {TOOLS.map((t) => (
                 <button
