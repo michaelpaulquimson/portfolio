@@ -1,7 +1,4 @@
-.resume {
-  padding: var(--spacing-3xl) var(--spacing-xl);
-  width: 100%;
-}
+/* Section sizing (width/padding) owned by Portfolio.css */
 
 .resume__header {
   margin-bottom: var(--spacing-2xl);

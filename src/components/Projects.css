@@ -1,7 +1,4 @@
-.projects {
-  padding: var(--spacing-3xl) var(--spacing-xl);
-  width: 100%;
-}
+/* Section sizing (width/padding) owned by Portfolio.css */
 
 .projects__header {
   margin-bottom: var(--spacing-xl);
@@ -477,10 +474,16 @@
 
   .featured-card {
     grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
   }
 
   .featured-card__image {
-    display: none;
+    width: 100%;
+    order: -1;
+  }
+
+  .featured-card__image img {
+    max-height: 160px;
   }
 }
 

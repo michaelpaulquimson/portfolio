@@ -1,7 +1,4 @@
-.tools-section {
-  padding: var(--spacing-3xl) var(--spacing-xl);
-  width: 100%;
-}
+/* Section sizing (width/padding) owned by Portfolio.css */
 
 .tools-section__header {
   display: flex;

@@ -9,24 +9,17 @@
   width: 100%;
 }
 
-/* Section max-width centering */
+/*
+ * Section-level sizing is owned here so all sections behave identically
+ * regardless of static vs lazy-loaded CSS order.
+ * Inner containers (.resume__body, .projects__grid, etc.) use
+ * max-width: var(--max-width) + margin: auto to cap content at 1100px.
+ */
 .resume,
 .projects,
 .tools-section {
-  max-width: var(--max-width);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: max(var(--spacing-xl), (100vw - var(--max-width)) / 2);
-  padding-right: max(var(--spacing-xl), (100vw - var(--max-width)) / 2);
-}
-
-@media (max-width: 1140px) {
-  .resume,
-  .projects,
-  .tools-section {
-    padding-left: var(--spacing-xl);
-    padding-right: var(--spacing-xl);
-  }
+  width: 100%;
+  padding: var(--spacing-3xl) var(--spacing-xl);
 }
 
 @media (max-width: 768px) {
