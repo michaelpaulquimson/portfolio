@@ -12,6 +12,31 @@ import type { Project, CategoryFilter } from '../types/Project'
  */
 export const PROJECTS: Project[] = [
   {
+    id: 5,
+    title: "Daily Quest",
+    description: "Gamified loyalty platform for local businesses — customers complete quests to earn rewards at nearby shops.",
+    longDescription: [
+      "Installable PWA serving both sides of the marketplace — customers (Questors) earn rewards, shop owners (Quest Givers) manage their loyalty program.",
+      "Flutter mobile app for customers — discover shops, enroll in quests, track progress, and earn rewards on the go.",
+      "Shop owner tooling: product catalog, staff, order flow, and analytics in one dashboard.",
+      "Real-time notifications and event-driven background jobs for quest progress, rewards, and receipts.",
+      "Type-safe end-to-end stack with automated testing and pre-commit quality gates.",
+    ],
+    tags: ["Next.js", "TypeScript", "Flutter", "PostgreSQL", "Tailwind CSS"],
+    category: "web",
+    year: "2026",
+    featured: true,
+    imageUrl: "/portfolio/images/dailyquest/preview.png",
+    imageGallery: [
+      "/portfolio/images/dailyquest/preview.png",
+      "/portfolio/images/dailyquest/dashboard-desktop.png",
+      "/portfolio/images/dailyquest/home-desktop.png",
+      "/portfolio/images/dailyquest/home-mobile.png",
+      "/portfolio/images/dailyquest/quests-mobile.png",
+    ],
+    liveUrl: "https://dailyquest.co",
+  },
+  {
     id: 1,
     title: "Moonwatcher",
     description: "Discord trading signal bot for Crypto, PSE, and US stocks — actively used by a crypto community.",
