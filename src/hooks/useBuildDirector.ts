@@ -1,0 +1,472 @@
+import { useLayoutEffect, useMemo, useSyncExternalStore } from 'react'
+
+/**
+ * Build director: makes the real page assemble itself in front of the visitor.
+ *
+ * Each sector (page section) owns a list of "units" (real DOM elements). A unit goes
+ *   pending  → invisible, layout kept
+ *   scaffold → dashed outline only, an agent chip parks on it
+ *   reveal   → content materialises
+ *   (done)   → attribute removed, element is exactly what React rendered
+ * State is written to a `data-bld` attribute, never to className, so React re-renders
+ * cannot wipe it and a missed cleanup can never leave content hidden behind a class.
+ */
+
+export type AgentId = 'layout' | 'type' | 'render' | 'wire'
+export type SectorStatus = 'allocating' | 'building' | 'ready'
+
+export interface AgentView {
+  id: AgentId
+  label: string
+  verb: string
+  target: string
+  x: number
+  y: number
+  active: boolean
+}
+
+export interface SectorView {
+  id: string
+  index: number
+  label: string
+  brief: string
+  done: number
+  total: number
+  status: SectorStatus
+  framed: boolean
+  top: number
+  left: number
+  width: number
+  height: number
+}
+
+export interface BuildSnapshot {
+  phase: 'boot' | 'building' | 'done'
+  typed: string
+  tokens: number
+  done: number
+  total: number
+  agents: AgentView[]
+  sectors: SectorView[]
+}
+
+interface SectorDef {
+  id: string
+  label: string
+  brief: string
+  selector: string
+  stagger: number
+  scaffold: number
+}
+
+interface Unit {
+  el: HTMLElement
+  agent: AgentId
+  target: string
+}
+
+interface SectorRuntime {
+  def: SectorDef
+  index: number
+  el: HTMLElement
+  units: Unit[]
+  done: number
+  status: SectorStatus
+  started: boolean
+  framed: boolean
+}
+
+export const BUILD_COMMAND = 'build --agents=4 --target=portfolio --message="ship it live, in front of them"'
+
+const SECTORS: SectorDef[] = [
+  {
+    id: 'hero',
+    label: 'hero',
+    brief: 'make the first screen count',
+    selector: '[data-build]',
+    stagger: 300,
+    scaffold: 440,
+  },
+  {
+    id: 'resume',
+    label: 'experience',
+    brief: 'nine years, no filler',
+    selector:
+      '.section-label, .resume__title, .resume__summary, .stat, .block-title, .role, .stack__title, .skill-chip, .edu-cert__card',
+    stagger: 75,
+    scaffold: 300,
+  },
+  {
+    id: 'projects',
+    label: 'work',
+    brief: 'the work, shipped and live',
+    selector: '.section-label, .projects__title, .projects__intro, .filter-pill, .featured-card, .project-card',
+    stagger: 130,
+    scaffold: 360,
+  },
+  {
+    id: 'tools',
+    label: 'tools',
+    brief: 'utilities that run in the browser',
+    selector: '.section-label, .tools-section__title, .tools-section__toggle',
+    stagger: 160,
+    scaffold: 320,
+  },
+]
+
+const AGENT_ORDER: AgentId[] = ['layout', 'type', 'render', 'wire']
+
+const VERBS: Record<AgentId, string[]> = {
+  layout: ['scaffolding', 'measuring', 'aligning', 'structuring'],
+  type: ['typesetting', 'kerning', 'writing', 'tightening'],
+  render: ['rendering', 'shading', 'lighting', 'compositing'],
+  wire: ['wiring', 'binding', 'connecting', 'testing'],
+}
+
+const BOOT_MS = 750
+const REVEAL_MS = 520
+const FRAME_LINGER_MS = 1300
+
+const pick = <T,>(arr: T[], n: number): T => arr[n % arr.length]
+
+const inferAgent = (el: HTMLElement): AgentId => {
+  const hint = el.dataset.build
+  if (hint === 'layout' || hint === 'type' || hint === 'render' || hint === 'wire') return hint
+  if (/^(H1|H2|H3|P)$/.test(el.tagName)) return 'type'
+  if (el.matches('.featured-card, .project-card')) return 'render'
+  if (el.matches('button, a, .skill-chip, .filter-pill')) return 'wire'
+  if (el.matches('[class*="label"], [class*="title"], [class*="summary"]')) return 'type'
+  return 'layout'
+}
+
+const describe = (el: HTMLElement): string => {
+  if (el.querySelector('canvas') || el.dataset.build === 'render') return 'canvas webgl'
+  const text = (el.textContent ?? '').replace(/\s+/g, ' ').trim()
+  const short = text.length > 22 ? `${text.slice(0, 21)}…` : text
+  return `${el.tagName.toLowerCase()} "${short}"`
+}
+
+const emptySnapshot = (): BuildSnapshot => ({
+  phase: 'boot',
+  typed: '',
+  tokens: 0,
+  done: 0,
+  total: 0,
+  agents: AGENT_ORDER.map((id) => ({
+    id,
+    label: `agent/${id}`,
+    verb: 'idle',
+    target: '',
+    x: 0,
+    y: 0,
+    active: false,
+  })),
+  sectors: [],
+})
+
+class BuildDirector {
+  private listeners = new Set<() => void>()
+  private snapshot: BuildSnapshot = emptySnapshot()
+  private sectors: SectorRuntime[] = []
+  private agents = new Map<AgentId, AgentView & { seq: number }>()
+  private timers = new Set<number>()
+  private mo: MutationObserver | null = null
+  private io: IntersectionObserver | null = null
+  private queue: { sector: SectorRuntime; unit: Unit }[] = []
+  private pumping = false
+  private ro: ResizeObserver | null = null
+  private raf = 0
+  private phase: BuildSnapshot['phase'] = 'boot'
+  private typed = ''
+  private tokens = 0
+  private verbSeq = 0
+  private skipped = false
+
+  subscribe = (fn: () => void): (() => void) => {
+    this.listeners.add(fn)
+    return () => this.listeners.delete(fn)
+  }
+
+  getSnapshot = (): BuildSnapshot => this.snapshot
+
+  start(): void {
+    this.reset()
+    AGENT_ORDER.forEach((id) =>
+      this.agents.set(id, { id, label: `agent/${id}`, verb: 'idle', target: '', x: 0, y: 0, active: false, seq: 0 })
+    )
+
+    this.ro = new ResizeObserver(() => this.emit())
+    // Below the hero, each component is built the moment it scrolls into view.
+    this.io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          this.io?.unobserve(entry.target)
+          this.enqueue(entry.target as HTMLElement)
+        })
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -6% 0px' }
+    )
+    this.registerAvailable()
+    // Lazy sections mount later; register them the moment they hit the DOM (before paint).
+    if (this.sectors.length < SECTORS.length) {
+      this.mo = new MutationObserver(() => {
+        this.registerAvailable()
+        if (this.sectors.length === SECTORS.length) this.mo?.disconnect()
+      })
+      this.mo.observe(document.body, { childList: true, subtree: true })
+    }
+
+    // Boot: type the command, then spawn agents and start on the hero.
+    const startedAt = performance.now()
+    const type = () => {
+      const t = Math.min(1, (performance.now() - startedAt) / BOOT_MS)
+      this.typed = BUILD_COMMAND.slice(0, Math.round(t * BUILD_COMMAND.length))
+      this.emit()
+      if (t < 1) {
+        this.raf = requestAnimationFrame(type)
+        return
+      }
+      this.after(180, () => {
+        this.phase = 'building'
+        const hero = this.sectors.find((s) => s.def.id === 'hero')
+        if (hero) this.beginSector(hero)
+        this.pump()
+        this.emit()
+      })
+    }
+    this.raf = requestAnimationFrame(type)
+    window.addEventListener('resize', this.onResize)
+  }
+
+  /** Fast-forward: everything appears now. */
+  skip = (): void => {
+    if (this.phase === 'done') return
+    this.skipped = true
+    this.queue = []
+    this.pumping = false
+    this.io?.disconnect()
+    this.clearTimers()
+    cancelAnimationFrame(this.raf)
+    this.typed = BUILD_COMMAND
+    this.sectors.forEach((s) => {
+      s.units.forEach((u) => u.el.removeAttribute('data-bld'))
+      this.tokens += (s.units.length - s.done) * 1240
+      s.done = s.units.length
+      s.status = 'ready'
+      s.started = true
+      s.framed = false
+    })
+    this.agents.forEach((a) => (a.active = false))
+    this.phase = 'done'
+    this.emit()
+  }
+
+  dispose(): void {
+    this.reset()
+    this.listeners.clear()
+  }
+
+  private reset(): void {
+    this.clearTimers()
+    cancelAnimationFrame(this.raf)
+    window.removeEventListener('resize', this.onResize)
+    this.mo?.disconnect()
+    this.ro?.disconnect()
+    this.io?.disconnect()
+    this.mo = this.ro = this.io = null
+    this.queue = []
+    this.pumping = false
+    this.sectors.forEach((s) => s.units.forEach((u) => u.el.removeAttribute('data-bld')))
+    this.sectors = []
+    this.agents.clear()
+    this.phase = 'boot'
+    this.typed = ''
+    this.tokens = 0
+    this.skipped = false
+    this.snapshot = emptySnapshot()
+  }
+
+  private onResize = (): void => this.emit()
+
+  private after(ms: number, fn: () => void): void {
+    const id = window.setTimeout(() => {
+      this.timers.delete(id)
+      fn()
+    }, ms)
+    this.timers.add(id)
+  }
+
+  private clearTimers(): void {
+    this.timers.forEach((id) => window.clearTimeout(id))
+    this.timers.clear()
+  }
+
+  private registerAvailable(): void {
+    SECTORS.forEach((def, index) => {
+      if (this.sectors.some((s) => s.def.id === def.id)) return
+      const el = document.getElementById(def.id)
+      if (!el) return
+
+      const units: Unit[] = Array.from(el.querySelectorAll<HTMLElement>(def.selector))
+        .filter((node) => node.getClientRects().length > 0)
+        .map((node) => ({ el: node, agent: inferAgent(node), target: describe(node) }))
+
+      const sector: SectorRuntime = {
+        def,
+        index,
+        el,
+        units,
+        done: this.skipped ? units.length : 0,
+        status: this.skipped ? 'ready' : 'allocating',
+        started: this.skipped,
+        framed: !this.skipped,
+      }
+      if (!this.skipped) units.forEach((u) => u.el.setAttribute('data-bld', 'pending'))
+
+      this.sectors.push(sector)
+      this.sectors.sort((a, b) => a.index - b.index)
+      this.ro?.observe(el)
+      if (!this.skipped && def.id !== 'hero') units.forEach((u) => this.io?.observe(u.el))
+    })
+    this.emit()
+  }
+
+  private enqueue(el: HTMLElement): void {
+    for (const sector of this.sectors) {
+      const unit = sector.units.find((u) => u.el === el)
+      if (!unit) continue
+      this.queue.push({ sector, unit })
+      this.pump()
+      return
+    }
+  }
+
+  /** Starts queued components one after another so agents visibly work through them. */
+  private pump(): void {
+    if (this.pumping || this.phase !== 'building') return
+    const next = this.queue.shift()
+    if (!next) return
+    this.pumping = true
+    if (next.sector.status === 'allocating') {
+      next.sector.status = 'building'
+      next.sector.started = true
+    }
+    this.startUnit(next.sector, next.unit)
+    this.after(next.sector.def.stagger, () => {
+      this.pumping = false
+      this.pump()
+    })
+  }
+
+  private beginSector(sector: SectorRuntime): void {
+    if (sector.started) return
+    sector.started = true
+    sector.status = 'building'
+    if (sector.units.length === 0) {
+      this.finishSector(sector)
+      return
+    }
+    sector.units.forEach((unit, i) => this.after(i * sector.def.stagger, () => this.startUnit(sector, unit)))
+    this.emit()
+  }
+
+  private startUnit(sector: SectorRuntime, unit: Unit): void {
+    unit.el.setAttribute('data-bld', 'scaffold')
+
+    const agent = this.agents.get(unit.agent)
+    let seq = 0
+    if (agent) {
+      const r = unit.el.getBoundingClientRect()
+      agent.seq += 1
+      seq = agent.seq
+      agent.verb = pick(VERBS[unit.agent], this.verbSeq++)
+      agent.target = unit.target
+      agent.x = Math.max(8, Math.min(r.left + window.scrollX + 12, window.innerWidth - 190))
+      agent.y = Math.max(8, r.top + window.scrollY - 13)
+      agent.active = true
+    }
+    this.emit()
+
+    // The 3D scene is the slow one: let its scaffold box read before it renders.
+    const scaffoldMs = unit.agent === 'render' ? sector.def.scaffold * 2 : sector.def.scaffold
+    this.after(scaffoldMs, () => {
+      unit.el.setAttribute('data-bld', 'reveal')
+      this.after(REVEAL_MS, () => {
+        unit.el.removeAttribute('data-bld')
+        sector.done += 1
+        this.tokens += 700 + Math.round(Math.random() * 1200)
+        if (agent && agent.seq === seq) agent.active = false
+        if (sector.done >= sector.units.length) this.finishSector(sector)
+        this.emit()
+      })
+    })
+  }
+
+  private finishSector(sector: SectorRuntime): void {
+    sector.status = 'ready'
+    this.after(FRAME_LINGER_MS, () => {
+      sector.framed = false
+      this.emit()
+    })
+    if (this.sectors.length === SECTORS.length && this.sectors.every((s) => s.status === 'ready')) {
+      this.phase = 'done'
+    }
+    this.emit()
+  }
+
+  private emit(): void {
+    this.snapshot = {
+      phase: this.phase,
+      typed: this.typed,
+      tokens: this.tokens,
+      done: this.sectors.reduce((n, s) => n + s.done, 0),
+      total: this.sectors.reduce((n, s) => n + s.units.length, 0),
+      agents: AGENT_ORDER.flatMap((id) => {
+        const a = this.agents.get(id)
+        return a ? [{ id: a.id, label: a.label, verb: a.verb, target: a.target, x: a.x, y: a.y, active: a.active }] : []
+      }),
+      sectors: this.sectors.map((s) => {
+        const r = s.framed ? s.el.getBoundingClientRect() : null
+        return {
+          id: s.def.id,
+          index: s.index,
+          label: s.def.label,
+          brief: s.def.brief,
+          done: s.done,
+          total: s.units.length,
+          status: s.status,
+          framed: s.framed,
+          top: r ? r.top + window.scrollY : 0,
+          left: r ? r.left + window.scrollX : 0,
+          width: r ? r.width : 0,
+          height: r ? r.height : 0,
+        }
+      }),
+    }
+    this.listeners.forEach((fn) => fn())
+  }
+}
+
+const noopSubscribe = (): (() => void) => () => {}
+const nullSnapshot = (): null => null
+
+export const useBuildDirector = (
+  enabled: boolean
+): { snapshot: BuildSnapshot | null; skip: () => void } => {
+  const director = useMemo(() => (enabled ? new BuildDirector() : null), [enabled])
+
+  // Layout effect: units are hidden before the first paint, so nothing flashes.
+  useLayoutEffect(() => {
+    if (!director) return
+    director.start()
+    return () => director.dispose()
+  }, [director])
+
+  const snapshot = useSyncExternalStore<BuildSnapshot | null>(
+    director ? director.subscribe : noopSubscribe,
+    director ? director.getSnapshot : nullSnapshot
+  )
+
+  return { snapshot, skip: director ? director.skip : noopSubscribe }
+}

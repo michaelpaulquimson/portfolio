@@ -125,3 +125,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Redesign ─────────────────────────────────────────────── */
+.tools-section__header {
+  align-items: flex-end;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+.tools-section__heading {
+  flex: 1 1 20rem;
+  min-width: 0;
+}
+.tools-section__toggle {
+  font-size: 0.75rem;
+  padding: 0.7rem 1.3rem;
+  border-radius: 999px;
+}
+.tools-section__toggle:hover {
+  background: var(--bg-glass);
+  box-shadow: 0 6px 20px var(--accent-glow);
+}

@@ -25,7 +25,14 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
   return (
     <SectionWrapper id="tools" className="tools-section" sectionRef={sectionRef}>
       <div className="tools-section__header">
-        <div className="tools-section__label">// Utility Tools</div>
+        <div className="tools-section__heading">
+          <div className="section-label">
+            <span className="section-label__num">03</span> Utility tools
+          </div>
+          <h2 className="tools-section__title">
+            Small tools, <em>built in.</em>
+          </h2>
+        </div>
         <button
           className="tools-section__toggle"
           onClick={() => setIsExpanded((v) => !v)}

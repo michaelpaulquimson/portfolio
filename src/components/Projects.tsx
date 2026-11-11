@@ -173,8 +173,15 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
     <>
     <SectionWrapper id="projects" className="projects" sectionRef={sectionRef}>
       <div className="projects__header">
-        <div className="projects__section-label">// Work</div>
-        <h2 className="projects__title">Featured Projects</h2>
+        <div className="section-label">
+          <span className="section-label__num">02</span> Work
+        </div>
+        <h2 className="projects__title">
+          Selected <em>work.</em>
+        </h2>
+        <p className="projects__intro">
+          Products I designed, built and shipped. Open any project for the full story.
+        </p>
       </div>
 
       <div className="projects__filters" role="group" aria-label="Filter by category">
