@@ -11,11 +11,11 @@ interface BuildHudProps {
 const STATUS_LABEL = { allocating: 'ALLOCATING', building: 'BUILDING', ready: 'READY' } as const
 
 const BuildHud: React.FC<BuildHudProps> = ({ snapshot, onSkip }) => {
-  const { phase, typed, tokens, done, total, agents, sectors } = snapshot
+  const { phase, typed, tokens, done, total, agents, sectors, ambient, activity } = snapshot
 
-  const percent = total > 0 ? Math.floor((done / total) * 100) : 0
-  // Panel while agents are actually working; it folds to a pill when they idle (waiting for scroll).
-  const working = phase === 'boot' || agents.some((a) => a.active)
+  const percent = total > 0 ? Math.min(100, Math.floor((done / total) * 100)) : 0
+  // Panel while agents are actually building; ambient refinement lives in the pill so it does not flap open/closed.
+  const working = phase === 'boot' || agents.some((a) => a.active && !a.ambient)
   const hero = sectors.find((s) => s.id === 'hero')
   const heroReady = hero?.status === 'ready'
   const heroPercent = hero && hero.total > 0 ? Math.floor((hero.done / hero.total) * 100) : 0
@@ -134,15 +134,32 @@ const BuildHud: React.FC<BuildHudProps> = ({ snapshot, onSkip }) => {
           <div className={`bld-pill${finished ? ' bld-pill--done' : ''}`}>
             {finished ? (
               <>
-                <span className="bld-pill__accent">✓ 100%</span> built live by 4 agents · {tokens.toLocaleString()}{' '}
-                tokens
+                <span className="bld-pill__accent">✓ 100%</span>
+                <span className={`bld-pill__lead${activity ? ' bld-pill__lead--yield' : ''}`}>
+                  {activity ? 'agents still refining' : 'built live by 4 agents'} · {tokens.toLocaleString()} tokens
+                </span>
+                {activity && (
+                  <span className={`bld-pill__live${ambient ? ' bld-pill__live--on' : ''}`}>
+                    <span className="bld-pill__dot" />
+                    {activity}
+                  </span>
+                )}
                 <button type="button" className="bld-skip" onClick={() => window.location.reload()}>
                   ↻ replay
                 </button>
               </>
             ) : (
               <>
-                <span className="bld-pill__accent">{percent}%</span> built · scroll to build more
+                <span className="bld-pill__accent">{percent}%</span>
+                <span className={`bld-pill__lead${activity ? ' bld-pill__lead--yield' : ''}`}>
+                  built · {activity ? 'agents refining' : 'scroll to build more'}
+                </span>
+                {activity && (
+                  <span className={`bld-pill__live${ambient ? ' bld-pill__live--on' : ''}`}>
+                    <span className="bld-pill__dot" />
+                    {activity}
+                  </span>
+                )}
                 <button type="button" className="bld-skip" onClick={onSkip}>
                   ▸▸ FF
                 </button>

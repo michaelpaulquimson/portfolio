@@ -16,6 +16,51 @@ interface ProjectCardProps {
   onClick: (p: Project) => void
 }
 
+interface StoreLink {
+  key: 'questorAppStore' | 'questorPlayStore' | 'hubAppStore' | 'hubPlayStore'
+  app: 'Questor' | 'Hub'
+  store: 'ios' | 'android'
+}
+
+const STORE_LINKS: StoreLink[] = [
+  { key: 'questorAppStore', app: 'Questor', store: 'ios' },
+  { key: 'questorPlayStore', app: 'Questor', store: 'android' },
+  { key: 'hubAppStore', app: 'Hub', store: 'ios' },
+  { key: 'hubPlayStore', app: 'Hub', store: 'android' },
+]
+
+interface AppLinksProps {
+  project: Project
+  className: string
+  iconSize: number
+  stopPropagation?: boolean
+}
+
+/** Per-app store links (Questor / Hub, iOS / Android) for projects that ship several apps. */
+const AppLinks: React.FC<AppLinksProps> = ({ project, className, iconSize, stopPropagation }) => (
+  <>
+    {STORE_LINKS.map(({ key, app, store }) => {
+      const href = project.extraLinks?.[key]
+      if (!href) return null
+      const storeName = store === 'ios' ? 'App Store' : 'Google Play'
+      return (
+        <a
+          key={key}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={className}
+          onClick={stopPropagation ? (e) => e.stopPropagation() : undefined}
+          aria-label={`${app} on ${storeName} (opens in new window)`}
+        >
+          {store === 'ios' ? <FaApple size={iconSize} /> : <FaGooglePlay size={iconSize} />}
+          {app} {store === 'ios' ? 'iOS' : 'Android'}
+        </a>
+      )
+    })}
+  </>
+)
+
 const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick }) => (
   <motion.article
     className="project-card"
@@ -44,6 +89,12 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick }) => (
         <span>{project.year}</span>
         <span>·</span>
         <span>{project.category}</span>
+        {project.label && (
+          <>
+            <span>·</span>
+            <span>{project.label}</span>
+          </>
+        )}
       </div>
       <div className="project-card__title">{project.title}</div>
       <p className="project-card__desc">{project.description}</p>
@@ -208,6 +259,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
             >
               <div>
                 <div className="featured-card__badge">★ Featured</div>
+                {project.label && <div className="featured-card__label">{project.label} · {project.year}</div>}
                 <div className="featured-card__title">{project.title}</div>
                 <div className="featured-card__desc">{project.description}</div>
                 <div className="project-tags">
@@ -270,6 +322,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                       App Store
                     </a>
                   )}
+                  <AppLinks project={project} className="project-link" iconSize={13} stopPropagation />
                 </div>
               </div>
               {project.imageUrl && (
@@ -337,6 +390,9 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
               <h3 id="modal-title" className="modal-title">
                 {selectedProject.title}
               </h3>
+              {selectedProject.label && (
+                <p className="modal-label">{selectedProject.label} · {selectedProject.year}</p>
+              )}
 
               {selectedProject.imageGallery && selectedProject.imageGallery.length > 0 && (
                 <>
@@ -439,6 +495,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                     App Store
                   </a>
                 )}
+                <AppLinks project={selectedProject} className="modal-link" iconSize={15} />
               </div>
           </motion.div>
           </div>

@@ -23,6 +23,8 @@ export interface AgentView {
   x: number
   y: number
   active: boolean
+  /** true while the agent is on an ambient (post-build) visit rather than building */
+  ambient: boolean
 }
 
 export interface SectorView {
@@ -48,6 +50,10 @@ export interface BuildSnapshot {
   total: number
   agents: AgentView[]
   sectors: SectorView[]
+  /** any agent currently on an ambient visit */
+  ambient: boolean
+  /** last ambient task, kept after the visit ends so the HUD does not flicker */
+  activity: string
 }
 
 interface SectorDef {
@@ -63,6 +69,8 @@ interface Unit {
   el: HTMLElement
   agent: AgentId
   target: string
+  /** fully revealed; eligible for ambient visits */
+  built: boolean
 }
 
 interface SectorRuntime {
@@ -92,25 +100,25 @@ const SECTORS: SectorDef[] = [
     label: 'experience',
     brief: 'nine years, no filler',
     selector:
-      '.section-label, .resume__title, .resume__summary, .stat, .block-title, .role, .stack__title, .skill-chip, .edu-cert__card',
-    stagger: 75,
-    scaffold: 300,
+      '.section-label, .resume__title, .resume__summary, .stat, .block-title, .journey__step, .role, .skill-row, .tool-row, .edu-cert__card',
+    stagger: 240,
+    scaffold: 650,
   },
   {
     id: 'projects',
     label: 'work',
     brief: 'the work, shipped and live',
     selector: '.section-label, .projects__title, .projects__intro, .filter-pill, .featured-card, .project-card',
-    stagger: 130,
-    scaffold: 360,
+    stagger: 380,
+    scaffold: 800,
   },
   {
     id: 'tools',
     label: 'tools',
     brief: 'utilities that run in the browser',
     selector: '.section-label, .tools-section__title, .tools-section__toggle',
-    stagger: 160,
-    scaffold: 320,
+    stagger: 420,
+    scaffold: 700,
   },
 ]
 
@@ -123,9 +131,27 @@ const VERBS: Record<AgentId, string[]> = {
   wire: ['wiring', 'binding', 'connecting', 'testing'],
 }
 
+// Refinement verbs for ambient visits to already-built units.
+const AMBIENT_VERBS: Record<AgentId, string[]> = {
+  layout: ['re-measuring', 'aligning', 'tightening spacing', 'checking overflow'],
+  type: ['kerning', 'proofreading', 'tightening', 'rebalancing'],
+  render: ['polishing', 'checking contrast', 'shading', 'compositing'],
+  wire: ['re-testing', 'checking links', 'tuning', 'profiling'],
+}
+
 const BOOT_MS = 750
 const REVEAL_MS = 520
 const FRAME_LINGER_MS = 1300
+// Ambient work: one visit every AMBIENT_MIN..MAX ms, outline lasts POLISH_MS, chip lingers a little longer.
+const AMBIENT_MIN_MS = 1500
+const AMBIENT_MAX_MS = 3000
+const AMBIENT_PAIR_GAP_MS = 380
+const POLISH_MS = 800
+const CHIP_LINGER_MS = 250
+// Under load (several units waiting) builds compress so content is never hidden for long.
+const RUSH_QUEUE = 3
+const RUSH_BUDGET_MS = 900
+const RUSH_SCAFFOLD_MS = 420
 
 const pick = <T,>(arr: T[], n: number): T => arr[n % arr.length]
 
@@ -160,8 +186,11 @@ const emptySnapshot = (): BuildSnapshot => ({
     x: 0,
     y: 0,
     active: false,
+    ambient: false,
   })),
   sectors: [],
+  ambient: false,
+  activity: '',
 })
 
 class BuildDirector {
@@ -181,6 +210,8 @@ class BuildDirector {
   private tokens = 0
   private verbSeq = 0
   private skipped = false
+  private ambientOn = false
+  private activity = ''
 
   subscribe = (fn: () => void): (() => void) => {
     this.listeners.add(fn)
@@ -192,7 +223,17 @@ class BuildDirector {
   start(): void {
     this.reset()
     AGENT_ORDER.forEach((id) =>
-      this.agents.set(id, { id, label: `agent/${id}`, verb: 'idle', target: '', x: 0, y: 0, active: false, seq: 0 })
+      this.agents.set(id, {
+        id,
+        label: `agent/${id}`,
+        verb: 'idle',
+        target: '',
+        x: 0,
+        y: 0,
+        active: false,
+        ambient: false,
+        seq: 0,
+      })
     )
 
     this.ro = new ResizeObserver(() => this.emit())
@@ -237,6 +278,8 @@ class BuildDirector {
     }
     this.raf = requestAnimationFrame(type)
     window.addEventListener('resize', this.onResize)
+    window.addEventListener('scroll', this.wakeAmbient, { passive: true })
+    document.addEventListener('visibilitychange', this.wakeAmbient)
   }
 
   /** Fast-forward: everything appears now. */
@@ -249,17 +292,26 @@ class BuildDirector {
     this.clearTimers()
     cancelAnimationFrame(this.raf)
     this.typed = BUILD_COMMAND
+    this.ambientOn = false
     this.sectors.forEach((s) => {
-      s.units.forEach((u) => u.el.removeAttribute('data-bld'))
+      s.units.forEach((u) => {
+        u.el.removeAttribute('data-bld')
+        u.built = true
+      })
       this.tokens += (s.units.length - s.done) * 1240
       s.done = s.units.length
       s.status = 'ready'
       s.started = true
       s.framed = false
     })
-    this.agents.forEach((a) => (a.active = false))
+    this.agents.forEach((a) => {
+      a.active = false
+      a.ambient = false
+    })
     this.phase = 'done'
     this.emit()
+    // Ambient refinement may carry on after a skip.
+    this.wakeAmbient()
   }
 
   dispose(): void {
@@ -271,6 +323,10 @@ class BuildDirector {
     this.clearTimers()
     cancelAnimationFrame(this.raf)
     window.removeEventListener('resize', this.onResize)
+    window.removeEventListener('scroll', this.wakeAmbient)
+    document.removeEventListener('visibilitychange', this.wakeAmbient)
+    this.ambientOn = false
+    this.activity = ''
     this.mo?.disconnect()
     this.ro?.disconnect()
     this.io?.disconnect()
@@ -287,7 +343,84 @@ class BuildDirector {
     this.snapshot = emptySnapshot()
   }
 
-  private onResize = (): void => this.emit()
+  private onResize = (): void => {
+    this.emit()
+    this.wakeAmbient()
+  }
+
+  /** Starts the ambient loop if it is asleep. Cheap no-op while running, hidden, or still booting. */
+  private wakeAmbient = (): void => {
+    if (this.ambientOn || document.hidden || this.phase === 'boot' || this.sectors.length === 0) return
+    this.ambientOn = true
+    this.after(AMBIENT_MIN_MS, this.ambientTick)
+  }
+
+  /** One ambient beat. Sleeps (no timer) when the tab is hidden or no built unit is in view. */
+  private ambientTick = (): void => {
+    if (document.hidden || this.visibleBuilt().length === 0) {
+      this.ambientOn = false
+      return
+    }
+    this.visit()
+    if (Math.random() < 0.4) this.after(AMBIENT_PAIR_GAP_MS, () => this.visit())
+    this.after(AMBIENT_MIN_MS + Math.random() * (AMBIENT_MAX_MS - AMBIENT_MIN_MS), this.ambientTick)
+  }
+
+  /** Built units that are on screen right now and not mid-build or mid-visit. */
+  private visibleBuilt(): Unit[] {
+    const vh = window.innerHeight
+    const out: Unit[] = []
+    this.sectors.forEach((s) =>
+      s.units.forEach((u) => {
+        if (!u.built || !u.el.isConnected || u.el.hasAttribute('data-bld')) return
+        const r = u.el.getBoundingClientRect()
+        if (r.width > 0 && r.height > 0 && r.bottom > 40 && r.top < vh - 40) out.push(u)
+      })
+    )
+    return out
+  }
+
+  /** An idle agent hops onto a built unit, which gets a brief attribute-driven outline. */
+  private visit(): void {
+    if (document.hidden) return
+    const unit = (() => {
+      const c = this.visibleBuilt()
+      return c.length ? c[Math.floor(Math.random() * c.length)] : null
+    })()
+    const idle = AGENT_ORDER.filter((id) => !this.agents.get(id)?.active)
+    if (!unit || idle.length === 0) return
+    const id = idle.includes(unit.agent) ? unit.agent : idle[Math.floor(Math.random() * idle.length)]
+    const agent = this.agents.get(id)
+    if (!agent) return
+
+    agent.seq += 1
+    const seq = agent.seq
+    agent.verb = pick(AMBIENT_VERBS[id], this.verbSeq++)
+    agent.target = unit.target
+    this.park(agent, unit)
+    agent.ambient = true
+    this.activity = `${id} ${agent.verb} ${unit.target}`
+    this.tokens += 40 + Math.round(Math.random() * 120)
+    unit.el.setAttribute('data-bld', 'polish')
+    this.emit()
+
+    this.after(POLISH_MS, () => {
+      if (unit.el.getAttribute('data-bld') === 'polish') unit.el.removeAttribute('data-bld')
+    })
+    this.after(POLISH_MS + CHIP_LINGER_MS, () => {
+      if (agent.seq !== seq) return
+      agent.active = false
+      agent.ambient = false
+      this.emit()
+    })
+  }
+
+  private park(agent: AgentView, unit: Unit): void {
+    const r = unit.el.getBoundingClientRect()
+    agent.x = Math.max(8, Math.min(r.left + window.scrollX + 12, window.innerWidth - 190))
+    agent.y = Math.max(8, r.top + window.scrollY - 13)
+    agent.active = true
+  }
 
   private after(ms: number, fn: () => void): void {
     const id = window.setTimeout(() => {
@@ -310,7 +443,7 @@ class BuildDirector {
 
       const units: Unit[] = Array.from(el.querySelectorAll<HTMLElement>(def.selector))
         .filter((node) => node.getClientRects().length > 0)
-        .map((node) => ({ el: node, agent: inferAgent(node), target: describe(node) }))
+        .map((node) => ({ el: node, agent: inferAgent(node), target: describe(node), built: this.skipped }))
 
       const sector: SectorRuntime = {
         def,
@@ -352,8 +485,11 @@ class BuildDirector {
       next.sector.status = 'building'
       next.sector.started = true
     }
-    this.startUnit(next.sector, next.unit)
-    this.after(next.sector.def.stagger, () => {
+    // Watchable pace normally; when several units are waiting (fast scroll) compress so nothing stays hidden.
+    const waiting = this.queue.length
+    const rush = waiting >= RUSH_QUEUE
+    this.startUnit(next.sector, next.unit, rush)
+    this.after(Math.min(next.sector.def.stagger, RUSH_BUDGET_MS / (waiting + 1)), () => {
       this.pumping = false
       this.pump()
     })
@@ -371,34 +507,35 @@ class BuildDirector {
     this.emit()
   }
 
-  private startUnit(sector: SectorRuntime, unit: Unit): void {
+  private startUnit(sector: SectorRuntime, unit: Unit, rush = false): void {
     unit.el.setAttribute('data-bld', 'scaffold')
 
     const agent = this.agents.get(unit.agent)
     let seq = 0
     if (agent) {
-      const r = unit.el.getBoundingClientRect()
       agent.seq += 1
       seq = agent.seq
       agent.verb = pick(VERBS[unit.agent], this.verbSeq++)
       agent.target = unit.target
-      agent.x = Math.max(8, Math.min(r.left + window.scrollX + 12, window.innerWidth - 190))
-      agent.y = Math.max(8, r.top + window.scrollY - 13)
-      agent.active = true
+      this.park(agent, unit)
+      agent.ambient = false
     }
     this.emit()
 
     // The 3D scene is the slow one: let its scaffold box read before it renders.
-    const scaffoldMs = unit.agent === 'render' ? sector.def.scaffold * 2 : sector.def.scaffold
+    const baseScaffold = unit.agent === 'render' ? sector.def.scaffold * 2 : sector.def.scaffold
+    const scaffoldMs = rush ? Math.min(baseScaffold, RUSH_SCAFFOLD_MS) : baseScaffold
     this.after(scaffoldMs, () => {
       unit.el.setAttribute('data-bld', 'reveal')
       this.after(REVEAL_MS, () => {
         unit.el.removeAttribute('data-bld')
+        unit.built = true
         sector.done += 1
         this.tokens += 700 + Math.round(Math.random() * 1200)
         if (agent && agent.seq === seq) agent.active = false
         if (sector.done >= sector.units.length) this.finishSector(sector)
         this.emit()
+        this.wakeAmbient()
       })
     })
   }
@@ -424,8 +561,23 @@ class BuildDirector {
       total: this.sectors.reduce((n, s) => n + s.units.length, 0),
       agents: AGENT_ORDER.flatMap((id) => {
         const a = this.agents.get(id)
-        return a ? [{ id: a.id, label: a.label, verb: a.verb, target: a.target, x: a.x, y: a.y, active: a.active }] : []
+        return a
+          ? [
+              {
+                id: a.id,
+                label: a.label,
+                verb: a.verb,
+                target: a.target,
+                x: a.x,
+                y: a.y,
+                active: a.active,
+                ambient: a.ambient,
+              },
+            ]
+          : []
       }),
+      ambient: AGENT_ORDER.some((id) => this.agents.get(id)?.ambient),
+      activity: this.activity,
       sectors: this.sectors.map((s) => {
         const r = s.framed ? s.el.getBoundingClientRect() : null
         return {

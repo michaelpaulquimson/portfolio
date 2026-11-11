@@ -15,11 +15,16 @@ export interface Project {
   imageGallery?: string[]
   liveUrl?: string
   githubUrl?: string
+  label?: string
   year: string
   featured: boolean
   extraLinks?: {
     appStore?: string
     playStore?: string
+    questorAppStore?: string
+    questorPlayStore?: string
+    hubAppStore?: string
+    hubPlayStore?: string
     [key: string]: string | undefined
   }
 }

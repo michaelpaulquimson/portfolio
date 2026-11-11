@@ -12,38 +12,76 @@ interface ExperienceItem {
   isCurrent: boolean
 }
 
-interface SkillGroup {
-  title: string
-  modifier: 'core' | 'platform' | 'ai'
-  skills: string[]
+interface JourneyStep {
+  years: string
+  duration: string
+  name: string
+  text: string
+  isNow: boolean
+}
+
+interface SkillItem {
+  name: string
+  line: string
+}
+
+interface ToolGroup {
+  label: string
+  items: string[]
+  isAi?: boolean
 }
 
 interface ResumeProps {
   sectionRef?: React.RefObject<HTMLElement | null>
 }
 
+const JOURNEY: JourneyStep[] = [
+  {
+    years: '2017 – 2021',
+    duration: '3 yrs 10 mos',
+    name: 'Hard coder',
+    text: 'Wrote and fixed code by hand.',
+    isNow: false,
+  },
+  {
+    years: '2021 – 2025',
+    duration: '3 yrs 8 mos',
+    name: 'AI-assisted',
+    text: 'Started using AI tools to speed up routine work.',
+    isNow: false,
+  },
+  {
+    years: '2025 – Present',
+    duration: '1 yr 9 mos',
+    name: 'Working with AI agents',
+    text: 'Plan first, split work into small tasks, run AI agents side by side, then check with tests and a second review.',
+    isNow: true,
+  },
+]
+
 const EXPERIENCE: ExperienceItem[] = [
   {
     title: 'Senior Solutions Architect',
     company: 'Eclaro Business Solutions',
-    period: 'Feb 2025 – Mar 2026',
+    period: 'Feb 2025 – Nov 2026',
+    duration: '1 yr 9 mos',
     isCurrent: true,
     bullets: [
-      'Guided development teams on architecture and integration decisions, aligning technical direction with business goals.',
-      'Conducted code reviews focused on constructive feedback — raising the bar for quality while keeping the team moving.',
-      'Collaborated with engineers and stakeholders to triage and resolve production issues.',
+      'Adopted AI agents in daily work: plan first, review every result.',
+      'Set up simple checks and notes to keep quality high as we moved faster.',
+      'Helped teams choose a technical direction and fix live issues fast.',
     ],
   },
   {
     title: 'Senior Full Stack Developer',
     company: 'Eclaro Business Solutions',
     period: 'Jun 2021 – Feb 2025',
-    duration: '3 yrs 11 mos',
+    duration: '3 yrs 8 mos',
     isCurrent: false,
     bullets: [
-      'Built and shipped features end-to-end, from requirements gathering to production deployment.',
-      'Introduced AI tooling into the team\'s workflow, accelerating delivery without cutting corners on quality.',
-      'Wrote and maintained developer documentation to reduce knowledge silos and speed up onboarding.',
+      'Built and launched features with product and design, from idea to release.',
+      'Fixed bugs, improved stability, and wrote guides for new teammates.',
+      'Introduced AI coding tools to the team, my first step toward agents.',
     ],
   },
   {
@@ -52,10 +90,7 @@ const EXPERIENCE: ExperienceItem[] = [
     period: 'Feb 2020 – Jun 2021',
     duration: '1 yr 4 mos',
     isCurrent: false,
-    bullets: [
-      'Integrated third-party APIs to expand platform capabilities and improve user experience.',
-      'Worked with business analysts and designers to assess feasibility and translate requirements into working software.',
-    ],
+    bullets: ['Connected the platform to outside services (APIs) and built new features.'],
   },
   {
     title: 'Full Stack Developer',
@@ -63,40 +98,34 @@ const EXPERIENCE: ExperienceItem[] = [
     period: 'Jun 2019 – Feb 2020',
     duration: '8 mos',
     isCurrent: false,
-    bullets: [
-      'Resolved user-reported issues by digging into root cause, not just the symptom.',
-      'Participated in code reviews and pair programming — learning as much as contributing.',
-    ],
+    bullets: ['Fixed user-reported issues at the source; shipped features step by step.'],
   },
   {
     title: 'Full Stack Developer',
-    company: 'LakbayPH Travel Services',
+    company: 'LakbayPH',
     period: 'Jul 2017 – May 2019',
-    duration: '1 yr 11 mos',
+    duration: '1 yr 10 mos',
     isCurrent: false,
-    bullets: [
-      'Designed database schemas and built RESTful APIs for a live travel services platform.',
-      'Developed a mobile-friendly web app that improved how customers discovered and booked services.',
-    ],
+    bullets: ['Built the database, back end and booking site for a live travel platform.'],
   },
 ]
 
-const SKILL_GROUPS: SkillGroup[] = [
-  {
-    title: 'Core',
-    modifier: 'core',
-    skills: ['React', 'Angular', 'TypeScript', 'Node.js', 'Flutter', 'Python'],
-  },
-  {
-    title: 'Platform',
-    modifier: 'platform',
-    skills: ['AWS', 'Docker', 'MongoDB', 'REST APIs', 'Dart', 'Git', 'CI/CD', 'OpenShift'],
-  },
-  {
-    title: 'AI & Tooling',
-    modifier: 'ai',
-    skills: ['OpenAI Codex', 'LLM Integration', 'Claude Code', 'AI-Assisted Development'],
-  },
+const SKILLS: SkillItem[] = [
+  { name: 'Ship products', line: 'Idea to launch, solo or in a team.' },
+  { name: 'Direct AI agents', line: 'Plan, delegate, review their work.' },
+  { name: 'Solution design', line: 'Choose a simple, sensible structure.' },
+  { name: 'Quality control', line: 'Tests, reviews, root-cause fixes.' },
+  { name: 'Automation', line: 'Automated tests and deployments.' },
+]
+
+const TOOLS: ToolGroup[] = [
+  { label: 'AI', items: ['Claude Code', 'Codex', 'Gemini'], isAi: true },
+  { label: 'Languages', items: ['JavaScript', 'TypeScript', 'Dart'] },
+  { label: 'Web', items: ['React', 'Next.js', 'Angular'] },
+  { label: 'Backend', items: ['Node.js', 'Hono', 'Express'] },
+  { label: 'Database', items: ['PostgreSQL (Supabase)', 'MongoDB'] },
+  { label: 'Cloud & DevOps', items: ['AWS', 'Cloudflare', 'DigitalOcean', 'Docker', 'CI/CD'] },
+  { label: 'Mobile', items: ['Flutter (iOS & Android)'] },
 ]
 
 const calculateTotalYears = (): string => {
@@ -128,7 +157,7 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
             {TOTAL_YEARS} years building software that <em>matters.</em>
           </h2>
           <p className="resume__summary">
-            Full-stack developer and solutions architect with {TOTAL_YEARS} years shipping production-ready systems across diverse industries. Known for picking up new technologies fast and applying them to real problems. Treats AI not as a shortcut but as a genuine force multiplier — compressing delivery timelines while keeping quality at the center.
+            Software engineer with {TOTAL_YEARS} years building web and mobile apps. I started as a hard coder, writing every line by hand, and now work with AI agents, which help me and my team deliver faster. I've taken products from idea to launch, on my own and in teams, and I pick up new languages and tools as the work needs. I enjoy sharing what works and building together.
           </p>
         </header>
 
@@ -140,6 +169,22 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
             </div>
           ))}
         </dl>
+
+        <div className="resume__block">
+          <h3 className="block-title">Journey</h3>
+          <ol className="journey">
+            {JOURNEY.map((step) => (
+              <li key={step.name} className={`journey__step${step.isNow ? ' journey__step--now' : ''}`}>
+                <div className="journey__when">
+                  <span>{step.years}</span>
+                  <span className="journey__duration">{step.duration}</span>
+                </div>
+                <div className="journey__name">{step.name}</div>
+                <p className="journey__text">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
 
         <div className="resume__block">
           <h3 className="block-title">Work history</h3>
@@ -165,21 +210,34 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
           </ol>
         </div>
 
-        <div className="resume__block">
-          <h3 className="block-title">Stack</h3>
-          <div className="stack">
-            {SKILL_GROUPS.map((group) => (
-              <div key={group.title} className="stack__group">
-                <div className="stack__title">{group.title}</div>
-                <div className="stack__chips">
-                  {group.skills.map((s) => (
-                    <span key={s} className={`skill-chip skill-chip--${group.modifier}`}>
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+        <div className="resume__block resume__block--split">
+          <div>
+            <h3 className="block-title">Skills</h3>
+            <ul className="skills">
+              {SKILLS.map((sk) => (
+                <li key={sk.name} className="skill-row">
+                  <div className="skill-row__name">{sk.name}</div>
+                  <div className="skill-row__line">{sk.line}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="block-title">Tools</h3>
+            <ul className="tools">
+              {TOOLS.map((group) => (
+                <li key={group.label} className="tool-row">
+                  <div className="tool-row__label">{group.label}</div>
+                  <div className="stack__chips">
+                    {group.items.map((item) => (
+                      <span key={item} className={`skill-chip${group.isAi ? ' skill-chip--ai' : ''}`}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -187,17 +245,17 @@ const Resume: React.FC<ResumeProps> = ({ sectionRef }) => {
           <div>
             <h3 className="block-title">Education</h3>
             <div className="edu-cert__card">
-              <div className="edu-cert__name">B.S. Information Technology</div>
+              <div className="edu-cert__name">BS Information Technology</div>
               <div className="edu-cert__sub">Informatics College Eastwood</div>
-              <div className="edu-cert__date">2013 – 2016 · Philippines</div>
+              <div className="edu-cert__date">2013 – 2016</div>
             </div>
           </div>
           <div>
-            <h3 className="block-title">Certifications</h3>
+            <h3 className="block-title">Certification</h3>
             <div className="edu-cert__card">
               <div className="edu-cert__name">AWS Certified Cloud Practitioner</div>
-              <div className="edu-cert__sub">Amazon Web Services</div>
-              <div className="edu-cert__date">Feb 2021 – Feb 2024</div>
+              <div className="edu-cert__sub">Certification</div>
+              <div className="edu-cert__date">2021</div>
             </div>
           </div>
         </div>

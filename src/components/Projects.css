@@ -661,3 +661,20 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* Multi-app projects: many store links must wrap */
+.project-links {
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) var(--spacing-md);
+}
+.featured-card__label,
+.modal-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: var(--spacing-sm);
+}
+.modal-label {
+  margin-top: calc(var(--spacing-sm) * -1);
+}

@@ -32,6 +32,9 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
   const goTo = (id: string) => () =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
+  const resumeUrl = `${import.meta.env.BASE_URL}resume/CV_MICHAEL_QUIMSON_2026-11.pdf`
+  const coverLetterUrl = `${import.meta.env.BASE_URL}resume/COVER_LETTER_MICHAEL_QUIMSON_2026-11.pdf`
+
   const magnet = { onPointerMove: onMagnet, onPointerLeave: offMagnet }
 
   return (
@@ -61,12 +64,11 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
           </h1>
 
           <p className="hero__role" data-build="type">
-            Senior Solutions Architect &amp; Full Stack Developer
+            Full Stack Engineer &amp; Solutions Architect
           </p>
 
           <p className="hero__lede" data-build="type">
-            I design and ship production systems end to end — and use AI as a force multiplier,
-            not a shortcut.
+            Helps startups go from idea to MVP launch and beyond, fast
           </p>
 
           <div className="hero__links">
@@ -97,6 +99,25 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
             >
               Contact
             </button>
+            <a
+              href={resumeUrl}
+              download
+              className="hero__cta hero__cta--ghost"
+              data-build="wire"
+              aria-label="Download résumé (PDF)"
+              {...magnet}
+            >
+              Download résumé
+            </a>
+            <a
+              href={coverLetterUrl}
+              download
+              className="hero__download"
+              data-build="wire"
+              aria-label="Download cover letter (PDF)"
+            >
+              Cover letter
+            </a>
           </div>
 
         </div>
