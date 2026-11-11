@@ -98,7 +98,7 @@ const SECTORS: SectorDef[] = [
   {
     id: 'resume',
     label: 'experience',
-    brief: 'nine years, no filler',
+    brief: 'the track record, no filler',
     selector:
       '.section-label, .resume__title, .resume__summary, .stat, .block-title, .journey__step, .role, .skill-row, .tool-row, .edu-cert__card',
     stagger: 240,
@@ -205,6 +205,7 @@ class BuildDirector {
   private pumping = false
   private ro: ResizeObserver | null = null
   private raf = 0
+  private sweepRaf = 0
   private phase: BuildSnapshot['phase'] = 'boot'
   private typed = ''
   private tokens = 0
@@ -246,17 +247,17 @@ class BuildDirector {
           this.enqueue(entry.target as HTMLElement)
         })
       },
-      { threshold: 0.2, rootMargin: '0px 0px -6% 0px' }
+      // threshold 0: fires for any element that enters the viewport, however tall it is
+      { threshold: 0, rootMargin: '0px 0px -6% 0px' }
     )
     this.registerAvailable()
     // Lazy sections mount later; register them the moment they hit the DOM (before paint).
-    if (this.sectors.length < SECTORS.length) {
-      this.mo = new MutationObserver(() => {
-        this.registerAvailable()
-        if (this.sectors.length === SECTORS.length) this.mo?.disconnect()
-      })
-      this.mo.observe(document.body, { childList: true, subtree: true })
-    }
+    // The observer stays on for the whole session: units can also leave the DOM (project filter) or arrive later.
+    this.mo = new MutationObserver(() => {
+      if (this.sectors.length < SECTORS.length) this.registerAvailable()
+      this.scheduleSweep()
+    })
+    this.mo.observe(document.body, { childList: true, subtree: true })
 
     // Boot: type the command, then spawn agents and start on the hero.
     const startedAt = performance.now()
@@ -322,6 +323,8 @@ class BuildDirector {
   private reset(): void {
     this.clearTimers()
     cancelAnimationFrame(this.raf)
+    cancelAnimationFrame(this.sweepRaf)
+    this.sweepRaf = 0
     window.removeEventListener('resize', this.onResize)
     window.removeEventListener('scroll', this.wakeAmbient)
     document.removeEventListener('visibilitychange', this.wakeAmbient)
@@ -478,7 +481,11 @@ class BuildDirector {
   /** Starts queued components one after another so agents visibly work through them. */
   private pump(): void {
     if (this.pumping || this.phase !== 'building') return
-    const next = this.queue.shift()
+    let next = this.queue.shift()
+    while (next && (!next.unit.el.isConnected || !next.sector.units.includes(next.unit))) {
+      this.dropUnit(next.sector, next.unit)
+      next = this.queue.shift()
+    }
     if (!next) return
     this.pumping = true
     if (next.sector.status === 'allocating') {
@@ -503,11 +510,16 @@ class BuildDirector {
       this.finishSector(sector)
       return
     }
-    sector.units.forEach((unit, i) => this.after(i * sector.def.stagger, () => this.startUnit(sector, unit)))
+    sector.units.slice().forEach((unit, i) => this.after(i * sector.def.stagger, () => this.startUnit(sector, unit)))
     this.emit()
   }
 
   private startUnit(sector: SectorRuntime, unit: Unit, rush = false): void {
+    if (this.skipped || !sector.units.includes(unit)) return
+    if (!unit.el.isConnected) {
+      this.dropUnit(sector, unit)
+      return
+    }
     unit.el.setAttribute('data-bld', 'scaffold')
 
     const agent = this.agents.get(unit.agent)
@@ -526,21 +538,87 @@ class BuildDirector {
     const baseScaffold = unit.agent === 'render' ? sector.def.scaffold * 2 : sector.def.scaffold
     const scaffoldMs = rush ? Math.min(baseScaffold, RUSH_SCAFFOLD_MS) : baseScaffold
     this.after(scaffoldMs, () => {
+      if (!sector.units.includes(unit)) return
+      if (!unit.el.isConnected) {
+        this.dropUnit(sector, unit)
+        return
+      }
       unit.el.setAttribute('data-bld', 'reveal')
       this.after(REVEAL_MS, () => {
+        if (!sector.units.includes(unit)) return
         unit.el.removeAttribute('data-bld')
         unit.built = true
         sector.done += 1
         this.tokens += 700 + Math.round(Math.random() * 1200)
         if (agent && agent.seq === seq) agent.active = false
-        if (sector.done >= sector.units.length) this.finishSector(sector)
+        this.settle(sector)
         this.emit()
         this.wakeAmbient()
       })
     })
   }
 
+  /** Removes a unit that left the DOM (or was never reachable) and re-evaluates sector completion. */
+  private dropUnit(sector: SectorRuntime, unit: Unit): void {
+    const i = sector.units.indexOf(unit)
+    if (i === -1) return
+    sector.units.splice(i, 1)
+    if (unit.built) sector.done = Math.max(0, sector.done - 1)
+    this.io?.unobserve(unit.el)
+    unit.el.removeAttribute('data-bld')
+    const agent = this.agents.get(unit.agent)
+    if (agent && agent.target === unit.target) {
+      agent.seq += 1
+      agent.active = false
+      agent.ambient = false
+    }
+    this.settle(sector)
+    this.emit()
+  }
+
+  /** A sector is ready once it has started and every remaining unit is built, or when nothing is left in it. */
+  private settle(sector: SectorRuntime): void {
+    if (sector.status === 'ready') return
+    if (sector.units.length === 0) {
+      sector.started = true
+      this.finishSector(sector)
+    } else if (sector.started && sector.done >= sector.units.length) {
+      this.finishSector(sector)
+    }
+  }
+
+  private scheduleSweep(): void {
+    if (this.sweepRaf) return
+    this.sweepRaf = requestAnimationFrame(() => {
+      this.sweepRaf = 0
+      this.sweep()
+    })
+  }
+
+  /** Drops units that left the DOM; adopts new matching nodes as already-built (visible, never hidden). */
+  private sweep(): void {
+    let changed = false
+    this.sectors.forEach((sector) => {
+      sector.units.slice().forEach((u) => {
+        if (u.el.isConnected) return
+        this.queue = this.queue.filter((q) => q.unit !== u)
+        this.dropUnit(sector, u)
+        changed = true
+      })
+      if (!sector.el.isConnected) return
+      const known = new Set(sector.units.map((u) => u.el))
+      sector.el.querySelectorAll<HTMLElement>(sector.def.selector).forEach((node) => {
+        if (known.has(node) || node.hasAttribute('data-bld') || node.getClientRects().length === 0) return
+        sector.units.push({ el: node, agent: inferAgent(node), target: describe(node), built: true })
+        sector.done += 1
+        changed = true
+      })
+    })
+    if (changed) this.emit()
+  }
+
   private finishSector(sector: SectorRuntime): void {
+    if (sector.status === 'ready') return
     sector.status = 'ready'
     this.after(FRAME_LINGER_MS, () => {
       sector.framed = false

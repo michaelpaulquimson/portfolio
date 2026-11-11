@@ -16,7 +16,7 @@
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse at 70% 50%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 70% 50%, black 20%, transparent 75%);
   pointer-events: none;
 }
 
@@ -140,7 +140,7 @@
 .hero__cta--primary {
   background: linear-gradient(100deg, var(--accent-primary), var(--accent-secondary));
   border: 1px solid transparent;
-  color: #07080c;
+  color: var(--on-accent);
   font-weight: 600;
 }
 .hero__cta--primary:hover { box-shadow: 0 8px 32px var(--accent-glow); }
@@ -199,12 +199,40 @@
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
-/* Tablet & mobile: artifact moves behind the text, softer, still draggable above the fold */
+/* Narrow or short screens: the artifact card leaves the overlay and stacks in normal flow below the text, so it can never cover hero copy */
+@media (max-width: 900px), (max-height: 700px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--spacing-xl);
+    padding: 6rem var(--spacing-lg) 5rem;
+  }
+  .hero__content { order: 1; }
+  .hero__scene {
+    order: 2;
+    position: relative;
+    inset: auto;
+    left: auto;
+    bottom: auto;
+    z-index: 1;
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+  }
+  .hero__scene .agent {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+  }
+  .hero__scene[data-bld='scaffold'] { outline-offset: 3px; }
+}
+
 @media (max-width: 900px) {
-  .hero { padding: 6rem var(--spacing-lg) 5rem; align-items: flex-end; }
-  .hero__scene { left: 0; bottom: 38%; }
   .hero__vignette { background: radial-gradient(ellipse at 50% 28%, var(--accent-glow), transparent 60%); }
-  .hero__grid-bg { mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%); }
+  .hero__grid-bg { mask-image: radial-gradient(ellipse at 50% 30%, black 20%, transparent 75%); }
   .hero__hint { display: none; }
 }
 
@@ -227,3 +255,12 @@
 }
 .hero__download:hover { color: var(--accent-primary); }
 .hero__download:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+
+/* Touch screens: at least a 44x44 hit area, visuals unchanged */
+@media (pointer: coarse), (max-width: 768px) {
+  .hero__download {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

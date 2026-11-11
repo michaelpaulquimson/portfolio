@@ -342,7 +342,7 @@
 }
 .skill-chip--ai {
   border-color: var(--border-accent);
-  color: var(--accent-secondary);
+  color: var(--accent-secondary-text);
 }
 
 /* Education / certification */

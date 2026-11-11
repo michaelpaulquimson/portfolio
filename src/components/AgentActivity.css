@@ -79,7 +79,7 @@
   gap: 0.6rem;
   animation: agent-in 0.35s ease-out both;
 }
-.agent__mark { width: 1ch; color: var(--accent-secondary); }
+.agent__mark { width: 1ch; color: var(--accent-secondary-text); }
 .agent__line--ok .agent__mark,
 .agent__line--ok .agent__text { color: var(--accent-primary); }
 .agent__line--info .agent__text { color: var(--text-dim); }

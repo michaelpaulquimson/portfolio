@@ -141,7 +141,7 @@ const BuildHud: React.FC<BuildHudProps> = ({ snapshot, onSkip }) => {
                 {activity && (
                   <span className={`bld-pill__live${ambient ? ' bld-pill__live--on' : ''}`}>
                     <span className="bld-pill__dot" />
-                    {activity}
+                    <span className="bld-pill__text">{activity}</span>
                   </span>
                 )}
                 <button type="button" className="bld-skip" onClick={() => window.location.reload()}>
@@ -157,7 +157,7 @@ const BuildHud: React.FC<BuildHudProps> = ({ snapshot, onSkip }) => {
                 {activity && (
                   <span className={`bld-pill__live${ambient ? ' bld-pill__live--on' : ''}`}>
                     <span className="bld-pill__dot" />
-                    {activity}
+                    <span className="bld-pill__text">{activity}</span>
                   </span>
                 )}
                 <button type="button" className="bld-skip" onClick={onSkip}>

@@ -72,6 +72,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick }) => (
     onClick={() => onClick(project)}
     tabIndex={0}
     onKeyDown={(e) => {
+      if (e.target !== e.currentTarget) return
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()
         onClick(project)
@@ -148,6 +149,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const modalRef = useRef<HTMLDivElement>(null)
+  const openerRef = useRef<HTMLElement | null>(null)
 
   const filteredProjects =
     selectedCategory === 'all'
@@ -157,6 +159,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
   const featuredProjects = PROJECTS.filter((p) => p.featured)
 
   const openModal = useCallback((project: Project) => {
+    openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
     setSelectedProject(project)
     setCurrentImageIndex(0)
   }, [])
@@ -183,7 +186,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
         const first = focusable[0]
         const last = focusable[focusable.length - 1]
         if (e.shiftKey) {
-          if (document.activeElement === first) {
+          if (document.activeElement === first || document.activeElement === modal) {
             e.preventDefault()
             last?.focus()
           }
@@ -205,6 +208,9 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
+      const opener = openerRef.current
+      openerRef.current = null
+      if (opener?.isConnected) opener.focus()
     }
   }, [selectedProject, closeModal])
 
@@ -251,10 +257,19 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
       {selectedCategory === 'all' && featuredProjects.length > 0 && (
         <div className="projects__featured">
           {featuredProjects.map((project) => (
-            <button
+            <div
               key={project.id}
               className="featured-card"
+              role="button"
+              tabIndex={0}
               onClick={() => openModal(project)}
+              onKeyDown={(e) => {
+                if (e.target !== e.currentTarget) return
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  openModal(project)
+                }
+              }}
               aria-label={`Open ${project.title} details`}
             >
               <div>
@@ -335,7 +350,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                   <img src={project.imageUrl} alt="" aria-hidden="true" loading="lazy" />
                 </div>
               )}
-            </button>
+            </div>
           ))}
         </div>
       )}
@@ -396,7 +411,12 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
 
               {selectedProject.imageGallery && selectedProject.imageGallery.length > 0 && (
                 <>
-                  <div className={`modal-image-container modal-image-container--${selectedProject.category}`}>
+                  <div
+                    className={`modal-image-container modal-image-container--${selectedProject.category}`}
+                    {...(selectedProject.category === 'mobile' || selectedProject.category === 'tool'
+                      ? { tabIndex: 0, role: 'group', 'aria-label': 'Screenshot, scrollable' }
+                      : {})}
+                  >
                     <img
                       src={selectedProject.imageGallery[currentImageIndex]}
                       alt={`${selectedProject.title} screenshot ${currentImageIndex + 1} of ${selectedProject.imageGallery.length}`}
@@ -406,14 +426,14 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                   {selectedProject.imageGallery.length > 1 && (
                     <div className="gallery-controls">
                       <button className="gallery-nav" onClick={prevImage} aria-label="Previous image">‹</button>
-                      <div className="gallery-indicators" role="tablist">
+                      <div className="gallery-indicators">
                         {selectedProject.imageGallery.map((url, i) => (
                           <button
                             key={url}
                             className={`gallery-indicator${i === currentImageIndex ? ' gallery-indicator--active' : ''}`}
                             onClick={() => setCurrentImageIndex(i)}
-                            role="tab"
-                            aria-selected={i === currentImageIndex}
+                            type="button"
+                            aria-current={i === currentImageIndex ? 'true' : undefined}
                             aria-label={`Image ${i + 1}`}
                           />
                         ))}

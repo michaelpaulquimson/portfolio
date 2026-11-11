@@ -72,3 +72,13 @@
     display: none;
   }
 }
+
+/* Touch screens: 44x44 hit area per dot, visuals unchanged */
+@media (pointer: coarse), (max-width: 768px) {
+  .dot-nav { gap: 0; right: 0; }
+  .dot-nav__item {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+}
