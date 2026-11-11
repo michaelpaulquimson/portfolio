@@ -54,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ sectionRef }) => {
         <div className="hero__content">
           <div className="hero__status" data-build="layout">
             <span className="hero__status-dot" aria-hidden="true" />
-            Open to opportunities · Philippines
+            Open to remote opportunities &amp; side projects · Philippines
           </div>
 
           <h1 className="hero__name" data-build="type">
