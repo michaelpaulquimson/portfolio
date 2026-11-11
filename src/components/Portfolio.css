@@ -32,6 +32,22 @@
   }
 }
 
+/* Reserve a right gutter for the fixed dot nav and scroll-to-top wherever the nav is shown */
+@media (min-width: 901px) {
+  .hero,
+  .resume,
+  .projects,
+  .tools-section {
+    padding-right: max(var(--spacing-xl), var(--dotnav-gutter));
+  }
+  /* Left gutter for the folded build-replay button, so it never sits over a card at rest */
+  .resume,
+  .projects,
+  .tools-section {
+    padding-left: calc(var(--dotnav-gutter) + var(--spacing-md));
+  }
+}
+
 /* ── Redesign layer ─────────────────────────────────────────── */
 
 .portfolio__progress {
@@ -153,4 +169,10 @@
   transform: translateY(-2px);
   border-color: var(--accent-primary);
   box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+/* Last section fills the final screen: the end of the page never leaves a card under the fixed controls (theme toggle at the top, build pill and scroll-to-top at the bottom) */
+.tools-section {
+  min-height: 100svh;
+  padding-bottom: calc(clamp(4rem, 10vw, 7rem) + 4.5rem);
 }

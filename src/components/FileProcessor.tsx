@@ -4,7 +4,7 @@ import { FileText, Image, Download, Upload, Trash2, Loader, FileCheck } from 'lu
 import { PDFDocument } from 'pdf-lib'
 import { saveAs } from 'file-saver'
 import imageCompression from 'browser-image-compression'
-import { useTheme } from '../contexts/ThemeContext'
+import { useTheme } from '../contexts/useTheme'
 import './FileProcessor.css'
 
 interface FileItem {
@@ -92,7 +92,7 @@ const FileProcessor: React.FC = () => {
             maxSizeMB: 1,
             maxWidthOrHeight: 1920,
             useWebWorker: true,
-            fileType: fileItem.file.type as any
+            fileType: fileItem.file.type
           }
 
           try {

@@ -87,7 +87,7 @@ h2[data-bld='reveal'] {
   padding: 0.2rem 0.5rem;
   border: 1px solid var(--border-accent);
   background: var(--bg-base);
-  font-size: 0.5625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.16em;
   color: var(--accent-primary);
   white-space: nowrap;
@@ -115,7 +115,7 @@ h2[data-bld='reveal'] {
   border: 1px solid var(--agent-color);
   background: var(--bg-base);
   box-shadow: 0 4px 18px var(--accent-glow);
-  font-size: 0.5625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.14em;
   color: var(--text-primary);
   white-space: nowrap;
@@ -144,7 +144,7 @@ h2[data-bld='reveal'] {
 
 .bld-hud {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.1em;
 }
 
@@ -303,14 +303,58 @@ h2[data-bld='reveal'] {
 @keyframes bld-dot { 50% { opacity: 1; } }
 
 /* Once finished, the credit steps back after a moment: only the border dims, the pill stays solid and fully opaque */
-.bld-pill--done { animation: bld-panel-in 0.35s ease-out both, bld-recede 0.6s ease 6s forwards; }
+.bld-pill--done { animation: bld-panel-in 0.35s ease-out both, bld-recede 0.6s ease 6s forwards, bld-pill-fold 0.4s ease 6s forwards; }
 .bld-pill--done:hover, .bld-pill--done:focus-within { border-color: var(--border-accent); animation: none; }
+
+/* Finished: after the credit has been read, the pill folds to its replay button so it stops covering page content,
+   and only that button takes pointer events. Hovering or focusing the button unfolds the credit again. */
+.bld-pill--done { pointer-events: none; }
+.bld-pill--done .bld-skip { pointer-events: auto; }
+.bld-pill--done .bld-pill__accent,
+.bld-pill--done .bld-pill__lead,
+.bld-pill--done .bld-pill__live,
+.bld-pill--done .bld-skip__label {
+  animation: bld-fold 0.4s ease 6s forwards;
+}
+.bld-pill--done:has(.bld-skip:hover) .bld-pill__accent,
+.bld-pill--done:has(.bld-skip:hover) .bld-pill__lead,
+.bld-pill--done:has(.bld-skip:hover) .bld-pill__live,
+.bld-pill--done:has(.bld-skip:hover) .bld-skip__label,
+.bld-pill--done:has(.bld-skip:focus-visible) .bld-skip__label,
+.bld-pill--done:has(.bld-skip:focus-visible) .bld-pill__accent,
+.bld-pill--done:has(.bld-skip:focus-visible) .bld-pill__lead,
+.bld-pill--done:has(.bld-skip:focus-visible) .bld-pill__live {
+  animation: none;
+}
+.bld-skip__label { display: inline-block; overflow: hidden; vertical-align: bottom; white-space: pre; }
+.bld-pill--done .bld-skip__label { animation-name: bld-fold-label; }
+@keyframes bld-fold-label {
+  to { max-width: 0; opacity: 0; }
+}
+@keyframes bld-fold {
+  to {
+    max-width: 0;
+    margin-right: -0.6rem;
+    opacity: 0;
+    visibility: hidden;
+  }
+}
 @keyframes bld-recede { to { border-color: var(--border-subtle); } }
+@keyframes bld-pill-fold { to { padding-left: 0.5rem; padding-right: 0.5rem; } }
+
+/* The build panel owns the right edge while open: dot nav and scroll-to-top step aside so nothing sits under it */
+body:has(.bld-panel) .dot-nav { visibility: hidden; }
+body:has(.bld-panel) .scroll-to-top { visibility: hidden; }
+
+/* The terminal bar owns the bottom edge while it types: the panel sits above it */
+.bld-terminal ~ .bld-panel { bottom: 10.5rem; }
 
 /* The HUD yields to any open modal dialog (project, contact, command menu) */
 body:has([role='dialog'][aria-modal='true']) .bld-hud { display: none; }
 
 @media (max-width: 640px) {
+  .bld-pill--rest { visibility: hidden; }
+  .bld-terminal ~ .bld-panel { bottom: var(--spacing-md); }
   /* Phones: one compact strip, the page itself is the show */
   .bld-terminal { display: none; }
   .bld-panel { right: var(--spacing-md); left: var(--spacing-md); width: auto; bottom: var(--spacing-md); }
@@ -321,6 +365,15 @@ body:has([role='dialog'][aria-modal='true']) .bld-hud { display: none; }
   .bld-pill__lead--yield { display: none; }
   .bld-pill__live { max-width: 16ch; }
   .bld-frame__tag { left: var(--spacing-sm); }
+}
+
+/* Short landscape screens: the panel keeps to its header and footer so it never reaches the theme toggle */
+@media (max-height: 700px) {
+  .bld-panel__sectors { display: none; }
+  .bld-panel__agents { display: none; }
+}
+@media (max-height: 520px) {
+  .bld-pill--rest { visibility: hidden; }
 }
 
 /* Touch screens: FF / replay keep their look but get a 44x44 hit area */

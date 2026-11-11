@@ -144,11 +144,19 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick }) => (
 ))
 ProjectCard.displayName = 'ProjectCard'
 
+const ZOOM_WIDTH = 900
+
+/** Zoomed render width in CSS px: 900px, never above the image's natural width. */
+const zoomWidth = ({ w }: { w: number; h: number }): number => Math.min(w, ZOOM_WIDTH)
+
 const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [zoomed, setZoomed] = useState(false)
+  const [naturalSize, setNaturalSize] = useState<{ w: number; h: number } | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
+  const imageBoxRef = useRef<HTMLDivElement>(null)
   const openerRef = useRef<HTMLElement | null>(null)
 
   const filteredProjects =
@@ -162,11 +170,24 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
     openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
     setSelectedProject(project)
     setCurrentImageIndex(0)
+    setZoomed(false)
   }, [])
 
   const closeModal = useCallback(() => {
     setSelectedProject(null)
     setCurrentImageIndex(0)
+    setZoomed(false)
+  }, [])
+
+  const showImage = useCallback((update: (i: number) => number) => {
+    setCurrentImageIndex(update)
+    setZoomed(false)
+    imageBoxRef.current?.scrollTo(0, 0)
+  }, [])
+
+  const toggleZoom = useCallback(() => {
+    setZoomed((z) => !z)
+    imageBoxRef.current?.scrollTo(0, 0)
   }, [])
 
   useEffect(() => {
@@ -217,14 +238,14 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
   const nextImage = useCallback(() => {
     if (!selectedProject?.imageGallery) return
     const len = selectedProject.imageGallery.length
-    setCurrentImageIndex((i) => (i + 1) % len)
-  }, [selectedProject])
+    showImage((i) => (i + 1) % len)
+  }, [selectedProject, showImage])
 
   const prevImage = useCallback(() => {
     if (!selectedProject?.imageGallery) return
     const len = selectedProject.imageGallery.length
-    setCurrentImageIndex((i) => (i - 1 + len) % len)
-  }, [selectedProject])
+    showImage((i) => (i - 1 + len) % len)
+  }, [selectedProject, showImage])
 
   return (
     <>
@@ -412,17 +433,33 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
               {selectedProject.imageGallery && selectedProject.imageGallery.length > 0 && (
                 <>
                   <div
-                    className={`modal-image-container modal-image-container--${selectedProject.category}`}
+                    ref={imageBoxRef}
+                    className={`modal-image-container modal-image-container--${selectedProject.category}${zoomed ? ' modal-image-container--zoomed' : ''}`}
                     {...(selectedProject.category === 'mobile' || selectedProject.category === 'tool'
                       ? { tabIndex: 0, role: 'group', 'aria-label': 'Screenshot, scrollable' }
                       : {})}
                   >
-                    <img
-                      src={selectedProject.imageGallery[currentImageIndex]}
-                      alt={`${selectedProject.title} screenshot ${currentImageIndex + 1} of ${selectedProject.imageGallery.length}`}
-                      className="modal-image"
-                    />
+                    <button
+                      type="button"
+                      className="modal-image-zoom"
+                      onClick={toggleZoom}
+                      aria-label={zoomed ? 'Zoom out' : 'Zoom image'}
+                      aria-pressed={zoomed}
+                    >
+                      <img
+                        src={selectedProject.imageGallery[currentImageIndex]}
+                        alt={`${selectedProject.title} screenshot ${currentImageIndex + 1} of ${selectedProject.imageGallery.length}`}
+                        className="modal-image"
+                        style={zoomed && naturalSize ? { width: zoomWidth(naturalSize) } : undefined}
+                        onLoad={(e) =>
+                          setNaturalSize({ w: e.currentTarget.naturalWidth, h: e.currentTarget.naturalHeight })
+                        }
+                      />
+                    </button>
                   </div>
+                  <p className="modal-image-hint" aria-hidden="true">
+                    {zoomed ? 'Tap to zoom out' : 'Tap to zoom'}
+                  </p>
                   {selectedProject.imageGallery.length > 1 && (
                     <div className="gallery-controls">
                       <button className="gallery-nav" onClick={prevImage} aria-label="Previous image">‹</button>
@@ -431,7 +468,7 @@ const Projects: React.FC<ProjectsProps> = ({ sectionRef }) => {
                           <button
                             key={url}
                             className={`gallery-indicator${i === currentImageIndex ? ' gallery-indicator--active' : ''}`}
-                            onClick={() => setCurrentImageIndex(i)}
+                            onClick={() => showImage(() => i)}
                             type="button"
                             aria-current={i === currentImageIndex ? 'true' : undefined}
                             aria-label={`Image ${i + 1}`}

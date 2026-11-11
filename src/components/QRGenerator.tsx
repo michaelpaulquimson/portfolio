@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { QrCode, Download, Copy, Check } from 'lucide-react'
 import QRCode from 'qrcode'
-import { useTheme } from '../contexts/ThemeContext'
+import { useTheme } from '../contexts/useTheme'
 import './QRGenerator.css'
 
 const QRGenerator: React.FC = () => {

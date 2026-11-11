@@ -52,7 +52,7 @@
 
 .contact-dialog__label {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--accent-primary);
@@ -83,7 +83,7 @@
 
 .contact-dialog__field-label {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -126,7 +126,7 @@
 
 .contact-dialog__error {
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.6875rem;
   color: #ff4d6a;
   letter-spacing: 0.05em;
 }

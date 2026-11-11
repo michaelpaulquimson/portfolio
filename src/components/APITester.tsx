@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send, Globe, Copy, Check, AlertCircle, CheckCircle, Clock, List } from 'lucide-react'
-import { useTheme } from '../contexts/ThemeContext'
+import { useTheme } from '../contexts/useTheme'
 import './APITester.css'
 
 interface RequestHistory {

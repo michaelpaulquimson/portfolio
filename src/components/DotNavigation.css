@@ -11,6 +11,7 @@
 }
 
 .dot-nav__item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -22,13 +23,29 @@
 }
 
 .dot-nav__label {
+  /* Tooltip: only shown on hover / keyboard focus, opaque so it never reads through to content */
+  position: absolute;
+  right: calc(100% + 0.75rem);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  background: var(--bg-base);
+  opacity: 0;
+  pointer-events: none;
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-dim);
   white-space: nowrap;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.dot-nav__item:hover .dot-nav__label,
+.dot-nav__item:focus-visible .dot-nav__label {
+  opacity: 1;
 }
 
 .dot-nav__label--active {
@@ -63,12 +80,9 @@
   box-shadow: 0 0 10px var(--accent-glow);
 }
 
-@media (max-width: 768px) {
+/* No room beside the content below this width: the nav steps aside (sections stay reachable by scrolling and the command menu) */
+@media (max-width: 900px) {
   .dot-nav {
-    right: 0.75rem;
-  }
-
-  .dot-nav__label {
     display: none;
   }
 }

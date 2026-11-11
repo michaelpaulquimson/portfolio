@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BUILD_COMMAND } from '../hooks/useBuildDirector'
 import type { BuildSnapshot } from '../hooks/useBuildDirector'
 import './BuildHud.css'
@@ -21,6 +21,14 @@ const BuildHud: React.FC<BuildHudProps> = ({ snapshot, onSkip }) => {
   const heroPercent = hero && hero.total > 0 ? Math.floor((hero.done / hero.total) * 100) : 0
   const spawned = phase !== 'boot'
   const finished = phase === 'done'
+
+  // Phones: a finished pill steps out of the way at the very top of the page, where the hero CTAs sit at the screen edge
+  const [atTop, setAtTop] = useState(() => window.scrollY < 8)
+  useEffect(() => {
+    const onScroll = () => setAtTop(window.scrollY < 8)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     if (finished) return
@@ -131,7 +139,7 @@ const BuildHud: React.FC<BuildHudProps> = ({ snapshot, onSkip }) => {
             </div>
           </aside>
         ) : (
-          <div className={`bld-pill${finished ? ' bld-pill--done' : ''}`}>
+          <div className={`bld-pill${finished ? ' bld-pill--done' : ''}${atTop ? ' bld-pill--rest' : ''}`}>
             {finished ? (
               <>
                 <span className="bld-pill__accent">✓ 100%</span>
@@ -145,7 +153,7 @@ const BuildHud: React.FC<BuildHudProps> = ({ snapshot, onSkip }) => {
                   </span>
                 )}
                 <button type="button" className="bld-skip" onClick={() => window.location.reload()}>
-                  ↻ replay
+                  ↻<span className="bld-skip__label"> replay</span>
                 </button>
               </>
             ) : (

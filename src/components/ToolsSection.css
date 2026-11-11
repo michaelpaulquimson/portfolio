@@ -12,7 +12,7 @@
 
 .tools-section__label {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -20,7 +20,7 @@
 
 .tools-section__toggle {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.1em;
   color: var(--accent-primary);
   background: transparent;
@@ -73,7 +73,7 @@
 
 .tool-preview-card__sub {
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.6875rem;
   color: var(--text-dim);
 }
 
@@ -93,7 +93,7 @@
 
 .tool-tab {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.75rem 1.25rem;
@@ -144,4 +144,9 @@
 .tools-section__toggle:hover {
   background: var(--bg-glass);
   box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+/* Touch screens: 44px-high hit area */
+@media (pointer: coarse), (max-width: 768px) {
+  .tools-section__toggle { min-height: 44px; }
 }

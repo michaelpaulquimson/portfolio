@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import SectionWrapper from './SectionWrapper'
-import QRGenerator from './QRGenerator'
-import APITester from './APITester'
-import FileProcessor from './FileProcessor'
 import './ToolsSection.css'
+
+const QRGenerator = lazy(() => import('./QRGenerator'))
+const APITester = lazy(() => import('./APITester'))
+const FileProcessor = lazy(() => import('./FileProcessor'))
 
 type ToolId = 'qr' | 'api' | 'file'
 
@@ -75,7 +76,9 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
                 aria-labelledby="tool-tab-qr"
                 hidden={activeTool !== 'qr'}
               >
-                <QRGenerator />
+                <Suspense fallback={null}>
+                  <QRGenerator />
+                </Suspense>
               </div>
               <div
                 id="tool-panel-api"
@@ -83,7 +86,9 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
                 aria-labelledby="tool-tab-api"
                 hidden={activeTool !== 'api'}
               >
-                <APITester />
+                <Suspense fallback={null}>
+                  <APITester />
+                </Suspense>
               </div>
               <div
                 id="tool-panel-file"
@@ -91,7 +96,9 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({ sectionRef }) => {
                 aria-labelledby="tool-tab-file"
                 hidden={activeTool !== 'file'}
               >
-                <FileProcessor />
+                <Suspense fallback={null}>
+                  <FileProcessor />
+                </Suspense>
               </div>
             </div>
           </motion.div>

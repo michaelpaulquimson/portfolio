@@ -1,7 +1,7 @@
 .scroll-to-top {
   position: fixed;
   bottom: 2rem;
-  right: 1.5rem;
+  right: 0.75rem;
   z-index: 100;
   width: 36px;
   height: 36px;
@@ -23,4 +23,17 @@
 .scroll-to-top:hover {
   box-shadow: 0 0 12px var(--accent-glow);
   transform: translateY(-2px);
+}
+
+/* Touch screens: 44x44 hit area, visuals unchanged */
+@media (pointer: coarse), (max-width: 768px) {
+  .scroll-to-top::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
 }

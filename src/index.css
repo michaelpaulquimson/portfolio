@@ -48,6 +48,7 @@
   --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
 
   --max-width: 1200px;
+  --dotnav-gutter: 3.5rem;
   --section-padding-x: 1.5rem;
   --section-padding-y: 6rem;
 }

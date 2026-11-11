@@ -9,7 +9,7 @@
   padding: 0.375rem 0.75rem;
   cursor: pointer;
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.1em;
   color: var(--accent-primary);
   backdrop-filter: blur(8px);
@@ -51,6 +51,10 @@
   font: inherit;
   font-size: 0.875rem;
 }
+.cmdk__input:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -2px;
+}
 .cmdk__input::placeholder { color: var(--text-dim); }
 
 .cmdk__list { list-style: none; max-height: 50vh; overflow-y: auto; padding: var(--spacing-sm); }
@@ -66,13 +70,13 @@
   cursor: pointer;
 }
 .cmdk__item--active { background: var(--bg-glass); color: var(--text-primary); }
-.cmdk__hint { font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+.cmdk__hint { font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
 .cmdk__empty { padding: 1rem; font-size: 0.75rem; color: var(--text-dim); }
 
 .cmdk__foot {
   padding: 0.6rem 1.25rem;
   border-top: 1px solid var(--border-subtle);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.08em;
   color: var(--text-dim);
 }

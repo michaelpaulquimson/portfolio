@@ -420,7 +420,7 @@ class BuildDirector {
 
   private park(agent: AgentView, unit: Unit): void {
     const r = unit.el.getBoundingClientRect()
-    agent.x = Math.max(8, Math.min(r.left + window.scrollX + 12, window.innerWidth - 190))
+    agent.x = Math.max(8, Math.min(r.left + window.scrollX + 12, window.innerWidth - 240))
     agent.y = Math.max(8, r.top + window.scrollY - 13)
     agent.active = true
   }
